@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+// for greenDao
 apply plugin: 'org.greenrobot.greendao'
 
 android {
@@ -41,9 +42,14 @@ dependencies {
 
   // 3rd part libraries
   compile 'com.squareup.retrofit2:retrofit:2.2.0'
+  compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+  compile 'com.squareup.retrofit2:converter-gson:2.2.0'
   compile 'com.squareup.okhttp3:okhttp:3.6.0'
+  testCompile 'com.squareup.okhttp3:mockwebserver:3.6.0'
   compile 'com.google.dagger:dagger:2.10'
   annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+  compile 'com.jakewharton:butterknife:8.5.1'
+  annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
   compile 'com.github.bumptech.glide:glide:3.7.0'
   compile 'org.greenrobot:greendao:3.2.0'
   debugCompile 'im.dino:dbinspector:3.4.1@aar'
