@@ -1,4 +1,4 @@
-package com.hayukleung.xgithub.view.activity;
+package com.hayukleung.xgithub.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,6 @@ import com.hayukleung.xgithub.App;
 import com.hayukleung.xgithub.di.component.AppComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.di.module.GitHubApiModule;
-import com.hayukleung.xgithub.view.fragment.BaseFragment;
 import javax.inject.Inject;
 
 /**

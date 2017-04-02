@@ -3,7 +3,7 @@ package com.hayukleung.xgithub.di.component;
 import com.hayukleung.xgithub.di.PerActivity;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.di.module.UserModule;
-import com.hayukleung.xgithub.view.fragment.BaseFragment;
+import com.hayukleung.xgithub.view.BaseFragment;
 import dagger.Component;
 
 /**

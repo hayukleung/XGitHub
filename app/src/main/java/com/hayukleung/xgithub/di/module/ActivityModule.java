@@ -1,7 +1,7 @@
 package com.hayukleung.xgithub.di.module;
 
 import com.hayukleung.xgithub.di.PerActivity;
-import com.hayukleung.xgithub.view.activity.BaseActivity;
+import com.hayukleung.xgithub.view.BaseActivity;
 import dagger.Module;
 import dagger.Provides;
 

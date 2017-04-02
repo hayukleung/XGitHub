@@ -1,7 +1,7 @@
 package com.hayukleung.xgithub.di.component;
 
 import com.hayukleung.xgithub.di.module.AppModule;
-import com.hayukleung.xgithub.view.activity.BaseActivity;
+import com.hayukleung.xgithub.view.BaseActivity;
 import dagger.Component;
 import javax.inject.Singleton;
 
