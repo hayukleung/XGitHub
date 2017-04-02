@@ -15,5 +15,6 @@ import retrofit2.http.Path;
 
 public interface GitHubApi {
 
-  @GET("todo") Observable<Object> api(@Path("user") String user);
+  // 获取用户基本信息
+  @GET("/users/{username}") Observable<Object> api(@Path("username") String user);
 }
