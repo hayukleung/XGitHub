@@ -1,6 +1,6 @@
 package com.hayukleung.xgithub.presenter;
 
-import com.hayukleung.xgithub.view.MainView;
+import com.hayukleung.xgithub.view.main.MainView;
 import javax.inject.Inject;
 
 /**

@@ -1,4 +1,4 @@
-package com.hayukleung.xgithub.view;
+package com.hayukleung.xgithub.view.main;
 
 import com.hayukleung.mvp.MVPView;
 

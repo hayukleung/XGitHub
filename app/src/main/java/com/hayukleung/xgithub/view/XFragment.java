@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import com.hayukleung.mvp.lce.LCEView;
 import com.hayukleung.xgithub.R;
 
-public abstract class BaseLCEFragment<M> extends BaseFragment implements LCEView<M> {
+public class XFragment<M> extends BaseFragment implements LCEView<M> {
 
   private LinearLayout mContentView;
   private RelativeLayout mEmptyView;
@@ -22,7 +22,7 @@ public abstract class BaseLCEFragment<M> extends BaseFragment implements LCEView
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    View baseView = inflater.inflate(R.layout.fragment_base_lce, container, false);
+    View baseView = inflater.inflate(R.layout.fragment_x, container, false);
     mContentView = (LinearLayout) baseView.findViewById(R.id.content_frame);
     mContentView.removeAllViews();
     mContentView.addView(inflater.inflate(getContentView(), null),
@@ -38,9 +38,13 @@ public abstract class BaseLCEFragment<M> extends BaseFragment implements LCEView
     return baseView;
   }
 
-  public abstract int getContentView();
+  public int getContentView() {
+    return 0;
+  }
 
-  public abstract View.OnClickListener getRetryListener();
+  public View.OnClickListener getRetryListener() {
+    return null;
+  }
 
   @Override public void showLoading() {
     mContentView.setVisibility(View.GONE);

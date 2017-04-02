@@ -5,7 +5,7 @@ import android.support.design.widget.Snackbar;
 import com.hayukleung.mvp.lce.LoadView;
 import com.hayukleung.xgithub.widget.LoadingView;
 
-public abstract class BaseLoadingActivity extends BaseActivity implements LoadView {
+public abstract class BaseLoadingActivity extends XActivity implements LoadView {
 
   private LoadingView mLoadingView;
 

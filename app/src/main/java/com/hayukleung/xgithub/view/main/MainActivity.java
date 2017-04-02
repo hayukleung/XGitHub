@@ -1,4 +1,4 @@
-package com.hayukleung.xgithub.view;
+package com.hayukleung.xgithub.view.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,7 @@ import com.hayukleung.xgithub.di.component.DaggerMainComponent;
 import com.hayukleung.xgithub.di.component.MainComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.presenter.MainPresenter;
+import com.hayukleung.xgithub.view.XActivity;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -22,7 +23,7 @@ import javax.inject.Inject;
  * at 2017-03-31 18:00
  */
 
-public class MainActivity extends BaseActivity implements MainView, HasComponent<MainComponent> {
+public class MainActivity extends XActivity implements MainView, HasComponent<MainComponent> {
 
   @Inject protected MainPresenter mPresenter;
 

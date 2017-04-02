@@ -2,8 +2,6 @@ package com.hayukleung.xgithub.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import com.hayukleung.xgithub.App;
@@ -21,7 +19,8 @@ import javax.inject.Inject;
  * at 2017-03-31 16:17
  */
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
+
 
   // @Inject 告诉 Dagger 说 mGitHubApi 需要依赖注入
   // 于是 Dagger 就会构造一个 GitHubApi 的实例并满足它
@@ -49,18 +48,5 @@ public class BaseActivity extends AppCompatActivity {
    */
   protected ActivityModule getActivityModule() {
     return new ActivityModule(this);
-  }
-
-  /**
-   * Adds a {@link Fragment} to this activity's layout.
-   *
-   * @param containerViewId The container view to where add the fragment.
-   * @param fragment The fragment to be added.
-   */
-  protected void addFragment(int containerViewId, BaseFragment fragment) {
-    final FragmentTransaction fragmentTransaction =
-        this.getSupportFragmentManager().beginTransaction();
-    fragmentTransaction.add(containerViewId, fragment);
-    fragmentTransaction.commit();
   }
 }
