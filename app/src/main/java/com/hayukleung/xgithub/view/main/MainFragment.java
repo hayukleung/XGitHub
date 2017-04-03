@@ -27,7 +27,7 @@ public class MainFragment extends XFragment {
   /**
    * FragmentTabHost
    */
-  @BindView(android.R.id.tabhost) Footer1 mFooter;
+  @BindView(android.R.id.tabhost) Footer mFooter;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -54,9 +54,7 @@ public class MainFragment extends XFragment {
   private void initView() {
     // 找到TabHost
     mFooter.setup(getActivity(), getActivity().getSupportFragmentManager(), R.id.real_tab_content);
-    if (android.os.Build.VERSION.SDK_INT > 10) {
-      mFooter.getTabWidget().setShowDividers(0);
-    }
+    mFooter.getTabWidget().setShowDividers(0);
 
     initTabs();
 
@@ -83,10 +81,10 @@ public class MainFragment extends XFragment {
    */
   private void initTabs() {
     // 设置首页模块
-    MainTab1[] tabs = MainTab1.values();
+    MainTab[] tabs = MainTab.values();
     final int size = tabs.length;
     for (int i = 0; i < size; i++) {
-      MainTab1 mainTab = tabs[i];
+      MainTab mainTab = tabs[i];
       TabHost.TabSpec tab = mFooter.newTabSpec(getString(mainTab.getResName()));
       View indicator = LayoutInflater.from(getActivity().getApplicationContext())
           .inflate(R.layout.item_tab_host, null);

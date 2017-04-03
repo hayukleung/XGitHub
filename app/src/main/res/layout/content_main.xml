@@ -12,12 +12,11 @@
       android:layout_weight="1"
       />
 
-  <com.hayukleung.xgithub.view.main.Footer1
+  <com.hayukleung.xgithub.view.main.Footer
       android:id="@android:id/tabhost"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/xp10.0"
+      android:layout_height="@dimen/xp15.0"
       android:layout_gravity="center"
-      android:background="@android:color/white"
       >
 
     <FrameLayout
@@ -27,6 +26,6 @@
         android:layout_gravity="center"
         android:layout_weight="0"
         />
-  </com.hayukleung.xgithub.view.main.Footer1>
+  </com.hayukleung.xgithub.view.main.Footer>
 
 </LinearLayout>

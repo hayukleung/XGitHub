@@ -9,7 +9,7 @@ import android.util.AttributeSet;
  * <p>
  * Created by hayukleung on 1/14/16.
  */
-public class Footer1 extends FragmentTabHost {
+public class Footer extends FragmentTabHost {
 
   private String mCurrentTag;
 
@@ -18,7 +18,7 @@ public class Footer1 extends FragmentTabHost {
    */
   private String mNoTabChangedTag;
 
-  public Footer1(Context context, AttributeSet attrs) {
+  public Footer(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
 

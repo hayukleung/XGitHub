@@ -19,6 +19,9 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
   private RelativeLayout mErrorView;
   private RelativeLayout mLoadingView;
 
+  public XFragment() {
+  }
+
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
