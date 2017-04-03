@@ -3,7 +3,6 @@ package com.hayukleung.xgithub.view;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import butterknife.ButterKnife;
 import com.hayukleung.xgithub.App;
 import com.hayukleung.xgithub.di.component.AppComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
@@ -19,7 +18,7 @@ import javax.inject.Inject;
  * at 2017-03-31 16:17
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
 
 
   // @Inject 告诉 Dagger 说 mGitHubApi 需要依赖注入
@@ -29,7 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     getAppComponent().inject(this);
-    ButterKnife.bind(this);
   }
 
   /**

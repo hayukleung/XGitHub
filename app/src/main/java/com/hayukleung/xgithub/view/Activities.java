@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 /**
  * activity 通用工具
  */
-class Activities {
+public class Activities {
 
   public static void startActivity(Fragment fragment, Class<? extends Fragment> fragmentClass) {
     startActivity(fragment, fragmentClass, null, -1, null);

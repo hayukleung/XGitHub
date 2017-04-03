@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentHelper;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.widget.FrameLayout;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.hayukleung.xgithub.R;
 import com.hayukleung.xgithub.common.wrapper.XLog;
@@ -26,10 +28,11 @@ import javax.inject.Inject;
  * at 2017-03-31 16:17
  */
 
-public abstract class XActivity extends BaseActivity {
+public class XActivity extends BaseActivity {
 
   public static final String FRAGMENT_NAME = "fragment_name";
   private static final String FRAGMENT_RECORD = "fragment_record";
+  @BindView(R.id.content) public FrameLayout mContent;
   // @Inject 告诉 Dagger 说 mGitHubApi 需要依赖注入
   // 于是 Dagger 就会构造一个 GitHubApi 的实例并满足它
   @Inject protected GitHubApiModule mGitHubApiModule;
@@ -51,6 +54,7 @@ public abstract class XActivity extends BaseActivity {
 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_x);
+    ButterKnife.bind(this);
 
     BaseFragment fragment =
         (BaseFragment) getSupportFragmentManager().findFragmentByTag(getFragmentTag());

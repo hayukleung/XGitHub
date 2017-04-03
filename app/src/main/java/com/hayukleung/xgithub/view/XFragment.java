@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import butterknife.ButterKnife;
 import com.hayukleung.mvp.lce.LCEView;
 import com.hayukleung.xgithub.R;
 
-public class XFragment<M> extends BaseFragment implements LCEView<M> {
+public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
 
   private LinearLayout mContentView;
   private RelativeLayout mEmptyView;
@@ -35,16 +36,13 @@ public class XFragment<M> extends BaseFragment implements LCEView<M> {
 
     mLoadingView = (RelativeLayout) baseView.findViewById(R.id.loading_layout);
 
+    ButterKnife.bind(this, mContentView);
     return baseView;
   }
 
-  public int getContentView() {
-    return 0;
-  }
+  abstract protected int getContentView();
 
-  public View.OnClickListener getRetryListener() {
-    return null;
-  }
+  abstract protected View.OnClickListener getRetryListener();
 
   @Override public void showLoading() {
     mContentView.setVisibility(View.GONE);
