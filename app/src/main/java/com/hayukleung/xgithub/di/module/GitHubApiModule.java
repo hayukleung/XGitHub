@@ -37,20 +37,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
   @Inject public GitHubApiModule() {
   }
 
-  @Provides public OkHttpClient providesOkHttpClient() {
+  @Provides public GitHubApi providesGitHubApi() {
 
+    // OkHttpClient
     OkHttpClient.Builder builder =
         new OkHttpClient.Builder().connectTimeout(60 * 1000, TimeUnit.MILLISECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS);
-
     if (BuildConfig.DEBUG) {
       HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
       loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
       builder.interceptors().add(loggingInterceptor);
     }
-
     TrustAnyTrustManager trustAnyTrustManager = new TrustAnyTrustManager();
     SSLContext sc = null;
     try {
@@ -61,19 +60,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
     }
     builder.sslSocketFactory(sc.getSocketFactory(), trustAnyTrustManager);
     builder.hostnameVerifier(new TrustGitHubHostnameVerifier());
+    OkHttpClient okHttpClient = builder.build();
 
-    return builder.build();
-  }
-
-  @Provides public Retrofit providesRetrofit(OkHttpClient okHttpClient) {
-    return new Retrofit.Builder().baseUrl(Constants.HOST_API_GITHUB)
+    // Retrofit
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.HOST_API_GITHUB)
         // 添加Rx适配器
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         // 添加Gson转换器
         .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
-  }
 
-  @Provides public GitHubApi providesGitHubApi(Retrofit retrofit) {
     return retrofit.create(GitHubApi.class);
   }
 

@@ -75,4 +75,8 @@ public class ProfileFragment extends XFragment
   @OnClick({ R.id.text }) void onClick(View view) {
 
   }
+
+  @Override public void error(Throwable e) {
+
+  }
 }

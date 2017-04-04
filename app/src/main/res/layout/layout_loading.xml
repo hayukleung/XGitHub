@@ -3,13 +3,13 @@
     android:id="@+id/loading_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@android:color/transparent"
     >
 
-  <ProgressBar
+  <com.hayukleung.xgithub.widget.ShyaringanView
       android:id="@+id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/xp20.0"
+      android:layout_height="@dimen/xp20.0"
       android:layout_centerInParent="true"
       />
 

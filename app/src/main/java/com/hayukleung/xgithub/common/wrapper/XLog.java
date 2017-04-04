@@ -65,6 +65,10 @@ public class XLog {
     Logger.e(message, args);
   }
 
+  public static void e(Throwable throwable) {
+    e(throwable, "");
+  }
+
   public static void e(Throwable throwable, String message) {
     e(throwable, message, "");
   }
