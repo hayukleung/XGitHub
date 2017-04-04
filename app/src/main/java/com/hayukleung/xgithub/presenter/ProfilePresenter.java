@@ -47,10 +47,11 @@ public class ProfilePresenter extends RXMVPPresenter<ProfileView> {
 
           @Override public void onError(Throwable e) {
             XLog.e(e);
+            getMVPView().dismissLoading();
           }
 
           @Override public void onComplete() {
-
+            getMVPView().dismissLoading();
           }
         }));
   }

@@ -26,7 +26,7 @@ import javax.inject.Inject;
  * at 2017-04-03 20:53
  */
 
-public class ProfileFragment extends XFragment
+public class ProfileFragment extends XFragment<GitHub>
     implements ProfileView, HasComponent<ProfileComponent> {
 
   @Inject protected ProfilePresenter mProfilePresenter;
@@ -67,16 +67,12 @@ public class ProfileFragment extends XFragment
     return null;
   }
 
-  @Override public void showContent(GitHub gitHub) {
-    // TODO
+  @Override public void showContent(GitHub data) {
+    super.showContent(data);
     Toast.makeText(getActivity(), "showContent", Toast.LENGTH_SHORT).show();
   }
 
   @OnClick({ R.id.text }) void onClick(View view) {
-
-  }
-
-  @Override public void error(Throwable e) {
 
   }
 }

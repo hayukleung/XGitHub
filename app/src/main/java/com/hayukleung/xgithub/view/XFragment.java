@@ -34,10 +34,12 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
             ViewGroup.LayoutParams.MATCH_PARENT));
 
     mEmptyView = (RelativeLayout) baseView.findViewById(R.id.empty_root_layout);
+    mEmptyView.setVisibility(View.GONE);
     mErrorView = (RelativeLayout) baseView.findViewById(R.id.error_root_layout);
     mErrorView.findViewById(R.id.retry_btn).setOnClickListener(getRetryListener());
-
+    mErrorView.setVisibility(View.GONE);
     mLoadingView = (RelativeLayout) baseView.findViewById(R.id.loading_layout);
+    mLoadingView.setVisibility(View.GONE);
 
     ButterKnife.bind(this, mContentView);
     return baseView;

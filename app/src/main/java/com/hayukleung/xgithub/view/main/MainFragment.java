@@ -1,6 +1,5 @@
 package com.hayukleung.xgithub.view.main;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -93,8 +92,8 @@ public class MainFragment extends XFragment implements MainView, HasComponent<Ma
       View indicator = LayoutInflater.from(getActivity().getApplicationContext())
           .inflate(R.layout.item_tab_host, null);
       TextView title = (TextView) indicator.findViewById(R.id.tab);
-      Drawable drawable = this.getResources().getDrawable(mainTab.getResIcon());
-      title.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+      // Drawable drawable = this.getResources().getDrawable(mainTab.getResIcon());
+      // title.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
       title.setText(getString(mainTab.getResName()));
       tab.setIndicator(indicator);
       tab.setContent(new TabHost.TabContentFactory() {

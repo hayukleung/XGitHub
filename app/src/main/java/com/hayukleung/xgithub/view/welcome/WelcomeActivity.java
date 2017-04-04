@@ -49,6 +49,7 @@ public class WelcomeActivity extends FullScreenActivity {
     name.setTextColor(Color.BLACK);
     name.setGravity(Gravity.CENTER);
     name.setTextSize(getResources().getDimensionPixelSize(R.dimen.xp6_0));
+    name.setBackground(null);
     TextPaint textPaint = name.getPaint();
     textPaint.setFakeBoldText(true);
     mContent.addView(name, layoutParams);
@@ -62,6 +63,7 @@ public class WelcomeActivity extends FullScreenActivity {
     name.setTextColor(getResources().getColor(R.color.colorPrimary));
     name.setGravity(Gravity.CENTER);
     name.setTextSize(getResources().getDimensionPixelSize(R.dimen.xp6_0));
+    name.setBackground(null);
     mContent.addView(name, layoutParams);
 
     CountDownTimer timer = new CountDownTimer(5 * 1000, 500) {
