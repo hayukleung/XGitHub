@@ -28,8 +28,6 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".view.XActivity">
-
-    </activity>
+    <activity android:name=".view.XActivity"/>
   </application>
 </manifest>

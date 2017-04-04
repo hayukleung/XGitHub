@@ -16,9 +16,7 @@
       android:drawablePadding="@dimen/xp2.0"
       android:drawableTop="@drawable/selector_tab_0"
       android:gravity="center"
-      android:text="xxx"
       android:textColor="@drawable/selector_tab_text_color"
       android:textSize="14sp"
-      >
-  </TextView>
+      />
 </RelativeLayout>

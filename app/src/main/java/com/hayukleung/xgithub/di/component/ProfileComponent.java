@@ -2,7 +2,7 @@ package com.hayukleung.xgithub.di.component;
 
 import com.hayukleung.xgithub.di.PerActivity;
 import com.hayukleung.xgithub.di.module.ActivityModule;
-import com.hayukleung.xgithub.view.main.MainFragment;
+import com.hayukleung.xgithub.view.profile.ProfileFragment;
 import dagger.Component;
 
 /**
@@ -15,6 +15,6 @@ import dagger.Component;
  */
 @PerActivity @Component(dependencies = AppComponent.class, modules = {
     ActivityModule.class
-}) public interface MainComponent extends ActivityComponent {
-  void inject(MainFragment mainFragment);
+}) public interface ProfileComponent extends ActivityComponent {
+  void inject(ProfileFragment profileFragment);
 }

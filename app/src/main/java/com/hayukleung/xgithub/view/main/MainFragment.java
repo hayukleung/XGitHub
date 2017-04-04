@@ -11,7 +11,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.BindView;
 import com.hayukleung.xgithub.R;
+import com.hayukleung.xgithub.di.HasComponent;
+import com.hayukleung.xgithub.di.component.DaggerMainComponent;
+import com.hayukleung.xgithub.di.component.MainComponent;
+import com.hayukleung.xgithub.di.module.ActivityModule;
+import com.hayukleung.xgithub.presenter.MainPresenter;
 import com.hayukleung.xgithub.view.XFragment;
+import javax.inject.Inject;
 
 /**
  * XGitHub
@@ -22,30 +28,28 @@ import com.hayukleung.xgithub.view.XFragment;
  * at 2017-04-03 16:25
  */
 
-public class MainFragment extends XFragment {
+public class MainFragment extends XFragment implements MainView, HasComponent<MainComponent> {
 
+  @Inject protected MainPresenter mPresenter;
   /**
    * FragmentTabHost
    */
   @BindView(android.R.id.tabhost) Footer mFooter;
 
-  @Nullable @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
-    return super.onCreateView(inflater, container, savedInstanceState);
-  }
-
-  @Override protected int getContentView() {
-    return R.layout.content_main;
-  }
-
-  @Override protected View.OnClickListener getRetryListener() {
-    return null;
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    getComponent().inject(this);
+    mPresenter.attachView(this);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     initView();
+  }
+
+  @Override public void onDestroy() {
+    mPresenter.detachView();
+    super.onDestroy();
   }
 
   /**
@@ -108,5 +112,26 @@ public class MainFragment extends XFragment {
         }
       });
     }
+  }
+
+  @Override public MainComponent getComponent() {
+    return DaggerMainComponent.builder()
+        .appComponent(getBaseActivity().getAppComponent())
+        .activityModule(new ActivityModule(getBaseActivity()))
+        .build();
+  }
+
+  @Nullable @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    return super.onCreateView(inflater, container, savedInstanceState);
+  }
+
+  @Override protected int getContentView() {
+    return R.layout.content_main;
+  }
+
+  @Override protected View.OnClickListener getRetryListener() {
+    return null;
   }
 }

@@ -69,8 +69,6 @@ public class WelcomeActivity extends FullScreenActivity {
       }
 
       @Override public void onFinish() {
-        // Activities.startActivity(WelcomeActivity.this,
-        // new Intent(WelcomeActivity.this, MainActivity.class));
         Activities.startActivity(WelcomeActivity.this, MainFragment.class);
         finish();
       }

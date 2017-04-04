@@ -35,7 +35,7 @@ public class BaseActivity extends AppCompatActivity {
    *
    * @return
    */
-  protected AppComponent getAppComponent() {
+  public AppComponent getAppComponent() {
     return ((App) getApplicationContext()).getAppComponent();
   }
 

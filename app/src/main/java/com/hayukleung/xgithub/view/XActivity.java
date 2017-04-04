@@ -35,7 +35,7 @@ public class XActivity extends BaseActivity {
   @BindView(R.id.content) public FrameLayout mContent;
   // @Inject 告诉 Dagger 说 mGitHubApi 需要依赖注入
   // 于是 Dagger 就会构造一个 GitHubApi 的实例并满足它
-  @Inject protected GitHubApiModule mGitHubApiModule;
+  @Inject public GitHubApiModule mGitHubApiModule;
   private String mFragmentName;
   private ArrayList<Integer> mFragmentRecord = new ArrayList<>();
 
