@@ -1,5 +1,6 @@
 package com.hayukleung.xgithub.api;
 
+import com.hayukleung.xgithub.model.GitHub;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -57,5 +58,5 @@ public interface GitHubApi {
 
   // public static final String URL_USER = "https://api.github.com/users/{user}";
   // 获取用户基本信息
-  @GET("/users/{user}") Observable<Object> api(@Path("user") String user);
+  @GET("/users/{user}") Observable<GitHub> api(@Path("user") String user);
 }

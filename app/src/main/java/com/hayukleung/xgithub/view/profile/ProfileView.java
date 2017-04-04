@@ -1,6 +1,7 @@
 package com.hayukleung.xgithub.view.profile;
 
 import com.hayukleung.mvp.MVPView;
+import com.hayukleung.xgithub.model.GitHub;
 
 /**
  * XGitHub
@@ -12,4 +13,6 @@ import com.hayukleung.mvp.MVPView;
  */
 
 public interface ProfileView extends MVPView {
+
+  void showContent(GitHub gitHub);
 }

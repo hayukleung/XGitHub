@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import com.hayukleung.xgithub.R;
@@ -11,12 +12,9 @@ import com.hayukleung.xgithub.di.HasComponent;
 import com.hayukleung.xgithub.di.component.DaggerProfileComponent;
 import com.hayukleung.xgithub.di.component.ProfileComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
+import com.hayukleung.xgithub.model.GitHub;
 import com.hayukleung.xgithub.presenter.ProfilePresenter;
 import com.hayukleung.xgithub.view.XFragment;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
 /**
@@ -40,31 +38,13 @@ public class ProfileFragment extends XFragment
     mProfilePresenter.attachView(this);
   }
 
+  @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    mProfilePresenter.request(getGitHubApiModule());
+  }
+
   @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-
-    getGitHubApiModule().providesGitHubApi(
-        getGitHubApiModule().providesRetrofit(getGitHubApiModule().providesOkHttpClient()))
-        .api("hayukleung")
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Object>() {
-          @Override public void onSubscribe(Disposable d) {
-
-          }
-
-          @Override public void onNext(Object value) {
-
-          }
-
-          @Override public void onError(Throwable e) {
-
-          }
-
-          @Override public void onComplete() {
-
-          }
-        });
   }
 
   @Override public void onDestroy() {
@@ -85,6 +65,11 @@ public class ProfileFragment extends XFragment
 
   @Override protected View.OnClickListener getRetryListener() {
     return null;
+  }
+
+  @Override public void showContent(GitHub gitHub) {
+    // TODO
+    Toast.makeText(getActivity(), "showContent", Toast.LENGTH_SHORT).show();
   }
 
   @OnClick({ R.id.text }) void onClick(View view) {

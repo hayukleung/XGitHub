@@ -14,11 +14,11 @@ public class BaseMVPPresenter<V extends MVPView> implements MVPPresenter<V> {
   private V mMVPView;
 
   @Override public void attachView(V view) {
-
+    mMVPView = view;
   }
 
   @Override public void detachView() {
-
+    mMVPView = null;
   }
 
   public V getMVPView() {
