@@ -15,6 +15,7 @@ import com.hayukleung.xgithub.di.component.DaggerMainComponent;
 import com.hayukleung.xgithub.di.component.MainComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.presenter.MainPresenter;
+import com.hayukleung.xgithub.view.TranslucentStatusCompat;
 import com.hayukleung.xgithub.view.XFragment;
 import javax.inject.Inject;
 
@@ -39,6 +40,8 @@ public class MainFragment extends XFragment implements MainView, HasComponent<Ma
     super.onCreate(savedInstanceState);
     getComponent().inject(this);
     mPresenter.attachView(this);
+
+    TranslucentStatusCompat.requestTranslucentStatus(getActivity());
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

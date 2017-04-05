@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
@@ -14,10 +15,15 @@ import com.hayukleung.xgithub.R;
 
 public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
 
-  private LinearLayout mContentView;
-  private RelativeLayout mEmptyView;
-  private RelativeLayout mErrorView;
-  private RelativeLayout mLoadingView;
+  private SystemBarConfig mSystemBarConfig;
+
+  private View mStatusBar;
+  private FrameLayout mLayoutRoot;
+
+  private LinearLayout mLayoutContent;
+  private RelativeLayout mLayoutEmpty;
+  private RelativeLayout mLayoutError;
+  private RelativeLayout mLayoutLoading;
 
   public XFragment() {
   }
@@ -27,22 +33,35 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
       @Nullable Bundle savedInstanceState) {
 
     View baseView = inflater.inflate(R.layout.fragment_x, container, false);
-    mContentView = (LinearLayout) baseView.findViewById(R.id.content_frame);
-    mContentView.removeAllViews();
-    mContentView.addView(inflater.inflate(getContentView(), null),
+    mLayoutRoot = (FrameLayout) baseView.findViewById(R.id.layout_root);
+
+    mLayoutContent = (LinearLayout) baseView.findViewById(R.id.layout_content);
+    mLayoutContent.removeAllViews();
+    mLayoutContent.addView(inflater.inflate(getContentView(), null),
         new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT));
 
-    mEmptyView = (RelativeLayout) baseView.findViewById(R.id.empty_root_layout);
-    mEmptyView.setVisibility(View.GONE);
-    mErrorView = (RelativeLayout) baseView.findViewById(R.id.error_root_layout);
-    mErrorView.findViewById(R.id.retry_btn).setOnClickListener(getRetryListener());
-    mErrorView.setVisibility(View.GONE);
-    mLoadingView = (RelativeLayout) baseView.findViewById(R.id.loading_layout);
-    mLoadingView.setVisibility(View.GONE);
+    mLayoutEmpty = (RelativeLayout) baseView.findViewById(R.id.layout_empty_root);
+    mLayoutEmpty.setVisibility(View.GONE);
 
-    ButterKnife.bind(this, mContentView);
+    mLayoutError = (RelativeLayout) baseView.findViewById(R.id.layout_error_root);
+    mLayoutError.findViewById(R.id.retry_btn).setOnClickListener(getRetryListener());
+    mLayoutError.setVisibility(View.GONE);
+
+    mLayoutLoading = (RelativeLayout) baseView.findViewById(R.id.layout_loading_root);
+    mLayoutLoading.setVisibility(View.GONE);
+
+    ButterKnife.bind(this, mLayoutContent);
     return baseView;
+  }
+
+  @Override public void onDestroyView() {
+    mStatusBar = null;
+    mLayoutContent = null;
+    mLayoutEmpty = null;
+    mLayoutError = null;
+    mLayoutLoading = null;
+    super.onDestroyView();
   }
 
   abstract protected int getContentView();
@@ -50,34 +69,34 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
   abstract protected View.OnClickListener getRetryListener();
 
   @Override public void showLoading() {
-    mContentView.setVisibility(View.GONE);
-    mEmptyView.setVisibility(View.GONE);
-    mErrorView.setVisibility(View.GONE);
-    mLoadingView.setVisibility(View.VISIBLE);
+    mLayoutContent.setVisibility(View.GONE);
+    mLayoutEmpty.setVisibility(View.GONE);
+    mLayoutError.setVisibility(View.GONE);
+    mLayoutLoading.setVisibility(View.VISIBLE);
   }
 
   @Override public void dismissLoading() {
-    mLoadingView.setVisibility(View.GONE);
+    mLayoutLoading.setVisibility(View.GONE);
   }
 
   @CallSuper @Override public void showContent(M data) {
     dismissLoading();
-    mEmptyView.setVisibility(View.GONE);
-    mErrorView.setVisibility(View.GONE);
-    mContentView.setVisibility(View.VISIBLE);
+    mLayoutEmpty.setVisibility(View.GONE);
+    mLayoutError.setVisibility(View.GONE);
+    mLayoutContent.setVisibility(View.VISIBLE);
   }
 
   @Override public void showError(Throwable e) {
     dismissLoading();
-    mContentView.setVisibility(View.GONE);
-    mEmptyView.setVisibility(View.GONE);
-    mErrorView.setVisibility(View.VISIBLE);
+    mLayoutContent.setVisibility(View.GONE);
+    mLayoutEmpty.setVisibility(View.GONE);
+    mLayoutError.setVisibility(View.VISIBLE);
   }
 
   @Override public void showEmpty() {
     dismissLoading();
-    mContentView.setVisibility(View.GONE);
-    mErrorView.setVisibility(View.GONE);
-    mEmptyView.setVisibility(View.VISIBLE);
+    mLayoutContent.setVisibility(View.GONE);
+    mLayoutError.setVisibility(View.GONE);
+    mLayoutEmpty.setVisibility(View.VISIBLE);
   }
 }

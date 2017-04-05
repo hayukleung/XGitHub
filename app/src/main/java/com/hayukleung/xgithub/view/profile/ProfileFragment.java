@@ -2,7 +2,14 @@ package com.hayukleung.xgithub.view.profile;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -30,7 +37,18 @@ public class ProfileFragment extends XFragment<GitHub>
     implements ProfileView, HasComponent<ProfileComponent> {
 
   @Inject protected ProfilePresenter mProfilePresenter;
-  @BindView(R.id.text) TextView mTextView;
+
+  @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
+  @BindView(R.id.bar_layout) AppBarLayout mBarLayout;
+  @BindView(R.id.toolbar) Toolbar mToolbar;
+  @BindView(R.id.icon) ImageView mIcon;
+  @BindView(R.id.bg) ImageView mBg;
+  @BindView(R.id.name) TextView mName;
+  @BindView(R.id.user_layout) LinearLayout mUserLayout;
+  @BindView(R.id.user_header_layout) RelativeLayout mUserHeaderLayout;
+  @BindView(R.id.scrollable_layout) CoordinatorLayout mScrollableLayout;
+  @BindView(R.id.title) TextView mTitleView;
+  @BindView(R.id.action) ImageView mRightView;
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -72,7 +90,7 @@ public class ProfileFragment extends XFragment<GitHub>
     Toast.makeText(getActivity(), "showContent", Toast.LENGTH_SHORT).show();
   }
 
-  @OnClick({ R.id.text }) void onClick(View view) {
+  @OnClick({}) void onClick(View view) {
 
   }
 }
