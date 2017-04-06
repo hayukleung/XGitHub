@@ -1,8 +1,7 @@
 package com.hayukleung.xgithub.presenter;
 
-import com.hayukleung.mvp.BaseMVPPresenter;
-import com.hayukleung.mvp.MVPView;
-import io.reactivex.disposables.CompositeDisposable;
+import com.hayukleung.mvp.lce.LCEPresenter;
+import com.hayukleung.mvp.lce.LCEView;
 
 /**
  * XGitHub
@@ -13,18 +12,18 @@ import io.reactivex.disposables.CompositeDisposable;
  * at 2017-04-02 15:06
  */
 
-public class RXMVPPresenter<V extends MVPView> extends BaseMVPPresenter<V> {
+public class RXMVPPresenter<V extends LCEView> extends LCEPresenter<V> {
 
-  protected CompositeDisposable mCompositeDisposable;
+  // protected CompositeDisposable mCompositeDisposable;
 
   @Override public void attachView(V view) {
     super.attachView(view);
-    mCompositeDisposable = new CompositeDisposable();
+    // mCompositeDisposable = new CompositeDisposable();
   }
 
   @Override public void detachView() {
     super.detachView();
-    mCompositeDisposable.clear();
-    mCompositeDisposable = null;
+    // mCompositeDisposable.clear();
+    // mCompositeDisposable = null;
   }
 }

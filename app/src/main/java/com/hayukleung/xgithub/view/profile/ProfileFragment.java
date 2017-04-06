@@ -11,17 +11,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import com.hayukleung.xgithub.R;
+import com.hayukleung.xgithub.common.wrapper.XImage;
+import com.hayukleung.xgithub.contract.ContractProfile;
 import com.hayukleung.xgithub.di.HasComponent;
 import com.hayukleung.xgithub.di.component.DaggerProfileComponent;
 import com.hayukleung.xgithub.di.component.ProfileComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.model.GitHub;
-import com.hayukleung.xgithub.presenter.ProfilePresenter;
+import com.hayukleung.xgithub.presenter.PresenterProfile;
 import com.hayukleung.xgithub.view.XFragment;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 import javax.inject.Inject;
 
 /**
@@ -33,10 +35,10 @@ import javax.inject.Inject;
  * at 2017-04-03 20:53
  */
 
-public class ProfileFragment extends XFragment<GitHub>
+public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresenterProfile>
     implements ProfileView, HasComponent<ProfileComponent> {
 
-  @Inject protected ProfilePresenter mProfilePresenter;
+  @Inject protected PresenterProfile mPresenterProfile;
 
   @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
   @BindView(R.id.bar_layout) AppBarLayout mBarLayout;
@@ -53,20 +55,16 @@ public class ProfileFragment extends XFragment<GitHub>
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     getComponent().inject(this);
-    mProfilePresenter.attachView(this);
+    mPresenterProfile.attachView(this);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    mProfilePresenter.request(getGitHubApiModule());
-  }
-
-  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
+    mPresenterProfile.request(getGitHubApiModule(), bindUntilEvent(FragmentEvent.PAUSE));
   }
 
   @Override public void onDestroy() {
-    mProfilePresenter.detachView();
+    mPresenterProfile.detachView();
     super.onDestroy();
   }
 
@@ -75,6 +73,10 @@ public class ProfileFragment extends XFragment<GitHub>
         .appComponent(getBaseActivity().getAppComponent())
         .activityModule(new ActivityModule(getBaseActivity()))
         .build();
+  }
+
+  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
   }
 
   @Override protected int getContentView() {
@@ -87,7 +89,9 @@ public class ProfileFragment extends XFragment<GitHub>
 
   @Override public void showContent(GitHub data) {
     super.showContent(data);
-    Toast.makeText(getActivity(), "showContent", Toast.LENGTH_SHORT).show();
+
+    XImage.load(getActivity(), data.getAvatar_url(), mIcon);
+    mName.setText(data.getName());
   }
 
   @OnClick({}) void onClick(View view) {

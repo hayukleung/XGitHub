@@ -9,5 +9,5 @@ package com.hayukleung.mvp;
  * at 2017-04-02 14:51
  */
 
-public interface MVPView {
+public interface MVPView<P extends MVPPresenter> {
 }

@@ -1,6 +1,6 @@
 package com.hayukleung.xgithub.view.main;
 
-import com.hayukleung.mvp.MVPView;
+import com.hayukleung.xgithub.contract.ContractMain;
 
 /**
  * XGitHub
@@ -11,5 +11,5 @@ import com.hayukleung.mvp.MVPView;
  * at 2017-04-02 17:12
  */
 
-public interface MainView extends MVPView {
+public interface MainView extends ContractMain.IViewMain {
 }

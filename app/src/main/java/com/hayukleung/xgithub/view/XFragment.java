@@ -1,6 +1,7 @@
 package com.hayukleung.xgithub.view;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,9 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import com.hayukleung.mvp.lce.LCEView;
+import com.hayukleung.xgithub.PausedHandler;
 import com.hayukleung.xgithub.R;
+import com.hayukleung.xgithub.model.BaseBean;
+import com.hayukleung.xgithub.presenter.RXMVPPresenter;
+import java.lang.ref.WeakReference;
 
-public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
+public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> extends BaseFragment
+    implements LCEView<M, P> {
 
   private SystemBarConfig mSystemBarConfig;
 
@@ -25,7 +31,11 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
   private RelativeLayout mLayoutError;
   private RelativeLayout mLayoutLoading;
 
+  private PausedHandler mHandler;
+
   public XFragment() {
+    mHandler = new XHandler(this);
+    mHandler.pause();
   }
 
   @Nullable @Override
@@ -55,6 +65,20 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
     return baseView;
   }
 
+  abstract protected int getContentView();
+
+  abstract protected View.OnClickListener getRetryListener();
+
+  @Override public void onResume() {
+    super.onResume();
+    mHandler.resume();
+  }
+
+  @Override public void onPause() {
+    mHandler.pause();
+    super.onPause();
+  }
+
   @Override public void onDestroyView() {
     mStatusBar = null;
     mLayoutContent = null;
@@ -63,10 +87,6 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
     mLayoutLoading = null;
     super.onDestroyView();
   }
-
-  abstract protected int getContentView();
-
-  abstract protected View.OnClickListener getRetryListener();
 
   @Override public void showLoading() {
     mLayoutContent.setVisibility(View.GONE);
@@ -98,5 +118,48 @@ public abstract class XFragment<M> extends BaseFragment implements LCEView<M> {
     mLayoutContent.setVisibility(View.GONE);
     mLayoutError.setVisibility(View.GONE);
     mLayoutEmpty.setVisibility(View.VISIBLE);
+  }
+
+  /**
+   * @see PausedHandler#storeMessage(Message)
+   */
+  protected boolean storeMessage(Message message) {
+    return true;
+  }
+
+  /**
+   * @see PausedHandler#processMessage(Message)
+   */
+  protected void processMessage(Message message) {
+
+  }
+
+  public PausedHandler getHandler() {
+    return mHandler;
+  }
+
+  private static class XHandler extends PausedHandler {
+
+    private WeakReference<XFragment> mFragment;
+
+    public XHandler(XFragment fragment) {
+      mFragment = new WeakReference<>(fragment);
+    }
+
+    @Override protected boolean storeMessage(Message message) {
+      XFragment fragment = mFragment.get();
+      if (fragment == null) {
+        return false;
+      } else {
+        return fragment.storeMessage(message);
+      }
+    }
+
+    @Override protected void processMessage(Message message) {
+      XFragment fragment = mFragment.get();
+      if (fragment != null) {
+        fragment.processMessage(message);
+      }
+    }
   }
 }

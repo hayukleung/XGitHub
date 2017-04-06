@@ -1,7 +1,6 @@
 package com.hayukleung.xgithub.view.profile;
 
-import com.hayukleung.mvp.lce.LCEView;
-import com.hayukleung.xgithub.model.GitHub;
+import com.hayukleung.xgithub.contract.ContractProfile;
 
 /**
  * XGitHub
@@ -12,5 +11,5 @@ import com.hayukleung.xgithub.model.GitHub;
  * at 2017-04-02 17:12
  */
 
-public interface ProfileView extends LCEView<GitHub> {
+public interface ProfileView extends ContractProfile.IViewProfile {
 }

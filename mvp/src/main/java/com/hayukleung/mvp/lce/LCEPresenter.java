@@ -1,15 +1,17 @@
-package com.hayukleung.mvp;
+package com.hayukleung.mvp.lce;
+
+import com.hayukleung.mvp.MVPPresenter;
 
 /**
  * XGitHub
  * com.hayukleung.mvp
- * BaseMVPPresenter.java
+ * LCEPresenter.java
  *
  * by hayukleung
  * at 2017-04-02 14:55
  */
 
-public class BaseMVPPresenter<V extends MVPView> implements MVPPresenter<V> {
+public class LCEPresenter<V extends LCEView> implements MVPPresenter<V> {
 
   private V mMVPView;
 
@@ -34,6 +36,7 @@ public class BaseMVPPresenter<V extends MVPView> implements MVPPresenter<V> {
   }
 
   public static class MVPViewNotAttachedException extends RuntimeException {
+
     public MVPViewNotAttachedException() {
       super("Please call Presenter.attachView(MVPView) before requesting data to the Presenter");
     }

@@ -10,11 +10,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import butterknife.BindView;
 import com.hayukleung.xgithub.R;
+import com.hayukleung.xgithub.contract.ContractMain;
 import com.hayukleung.xgithub.di.HasComponent;
 import com.hayukleung.xgithub.di.component.DaggerMainComponent;
 import com.hayukleung.xgithub.di.component.MainComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
-import com.hayukleung.xgithub.presenter.MainPresenter;
+import com.hayukleung.xgithub.model.Stub;
+import com.hayukleung.xgithub.presenter.PresenterMain;
 import com.hayukleung.xgithub.view.TranslucentStatusCompat;
 import com.hayukleung.xgithub.view.XFragment;
 import javax.inject.Inject;
@@ -28,9 +30,10 @@ import javax.inject.Inject;
  * at 2017-04-03 16:25
  */
 
-public class MainFragment extends XFragment implements MainView, HasComponent<MainComponent> {
+public class MainFragment extends XFragment<Stub, ContractMain.IPresenterMain>
+    implements MainView, HasComponent<MainComponent> {
 
-  @Inject protected MainPresenter mPresenter;
+  @Inject protected PresenterMain mPresenter;
   /**
    * FragmentTabHost
    */

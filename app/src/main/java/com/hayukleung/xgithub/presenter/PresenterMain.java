@@ -1,19 +1,19 @@
 package com.hayukleung.xgithub.presenter;
 
-import com.hayukleung.xgithub.view.main.MainView;
+import com.hayukleung.xgithub.contract.ContractMain;
 import javax.inject.Inject;
 
 /**
  * XGitHub
  * com.hayukleung.xgithub.presenter.main
- * MainPresenter.java
+ * PresenterMain.java
  *
  * by hayukleung
  * at 2017-04-02 17:03
  */
 
-public class MainPresenter extends RXMVPPresenter<MainView> {
+public class PresenterMain extends ContractMain.IPresenterMain {
 
-  @Inject public MainPresenter() {
+  @Inject public PresenterMain() {
   }
 }

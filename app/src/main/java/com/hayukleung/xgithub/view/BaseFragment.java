@@ -1,9 +1,9 @@
 package com.hayukleung.xgithub.view;
 
-import android.support.v4.app.Fragment;
 import com.hayukleung.xgithub.di.module.GitHubApiModule;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends RxFragment {
 
   // protected <C> C getComponent(Class<C> componentType) {
   // FragmentActivity activity = getActivity();

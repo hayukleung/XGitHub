@@ -1,6 +1,7 @@
 package com.hayukleung.mvp.lce;
 
 import android.support.annotation.UiThread;
+import com.hayukleung.mvp.MVPPresenter;
 import com.hayukleung.mvp.MVPView;
 
 /**
@@ -12,7 +13,14 @@ import com.hayukleung.mvp.MVPView;
  * at 2017-04-02 14:59
  */
 
-public interface LCEView<M> extends MVPView {
+/**
+ * mvp view with functions:
+ * loading - content - error and empty
+ *
+ * @param <M>
+ * @param <P>
+ */
+public interface LCEView<M, P extends MVPPresenter> extends MVPView<P> {
 
   @UiThread public void showLoading();
 
