@@ -8,7 +8,7 @@ import android.util.TypedValue;
 import com.hayukleung.xgithub.R;
 import java.lang.reflect.Method;
 
-class SystemBarConfig {
+public class SystemBarConfig {
 
   private static final String STATUS_BAR_HEIGHT_RES_NAME = "status_bar_height";
   private static final String NAV_BAR_HEIGHT_RES_NAME = "navigation_bar_height";

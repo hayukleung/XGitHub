@@ -1,6 +1,7 @@
 package com.hayukleung.xgithub.view.star;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import butterknife.BindView;
 import com.hayukleung.xgithub.R;
 import com.hayukleung.xgithub.common.RecyclerViewUtils;
@@ -39,8 +41,33 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
     super.onCreate(savedInstanceState);
   }
 
+  @Override public void onResume() {
+    super.onResume();
+    UIUtils.requestStatusBarLight(this, 0 != mLatestAlpha,
+        getResources().getColor(R.color.colorPrimary));
+  }
+
+  @Override protected int getContentView() {
+    return R.layout.content_star;
+  }
+
+  @Override protected View.OnClickListener getRetryListener() {
+    return null;
+  }
+
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      ViewGroup.MarginLayoutParams params =
+          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
+      params.topMargin = getSystemBarConfig().getStatusBarHeight();
+      mToolbar.setLayoutParams(params);
+    } else {
+      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
+      params.height = getSystemBarConfig().getStatusBarHeight();
+      getStatusBar().setLayoutParams(params);
+    }
 
     mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     // mSwipeRefreshLayout.setProgressViewEndTarget(false, Screen.getInstance(getActivity()).dp2px(120));
@@ -67,26 +94,15 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
         if (alpha > 255) alpha = 255;
         if (alpha < 0) alpha = 0;
         if (alpha == 0) {
-          UIUtils.requestStatusBarLight(StarFragment.this, false);
+          UIUtils.requestStatusBarLight(StarFragment.this, false,
+              getResources().getColor(R.color.colorPrimary));
         } else {
-          UIUtils.requestStatusBarLight(StarFragment.this, true);
+          UIUtils.requestStatusBarLight(StarFragment.this, true,
+              getResources().getColor(R.color.colorPrimary));
         }
         mToolbar.setBackgroundColor(Color.argb(alpha, 255, 255, 255));
         mLatestAlpha = alpha;
       }
     });
-  }
-
-  @Override protected int getContentView() {
-    return R.layout.content_star;
-  }
-
-  @Override protected View.OnClickListener getRetryListener() {
-    return null;
-  }
-
-  @Override public void onResume() {
-    super.onResume();
-    UIUtils.requestStatusBarLight(this, 0 != mLatestAlpha);
   }
 }

@@ -1,5 +1,6 @@
 package com.hayukleung.xgithub.view.profile;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -7,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -59,16 +61,6 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
     mPresenterProfile.attachView(this);
   }
 
-  @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    mPresenterProfile.request(getGitHubApiModule(), bindUntilEvent(FragmentEvent.PAUSE));
-  }
-
-  @Override public void onDestroy() {
-    mPresenterProfile.detachView();
-    super.onDestroy();
-  }
-
   @Override public ProfileComponent getComponent() {
     return DaggerProfileComponent.builder()
         .appComponent(getBaseActivity().getAppComponent())
@@ -76,8 +68,9 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
         .build();
   }
 
-  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
+  @Override public void onResume() {
+    super.onResume();
+    UIUtils.requestStatusBarLight(this, true, getResources().getColor(R.color.colorPrimary));
   }
 
   @Override protected int getContentView() {
@@ -88,16 +81,37 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
     return null;
   }
 
-  @Override public void onResume() {
-    super.onResume();
-    UIUtils.requestStatusBarLight(this, true);
-  }
-
   @Override public void showContent(GitHub data) {
     super.showContent(data);
 
     XImage.load(getActivity(), data.getAvatar_url(), mIcon);
     mName.setText(data.getName());
+  }
+
+  @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      ViewGroup.MarginLayoutParams params =
+          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
+      params.topMargin = getSystemBarConfig().getStatusBarHeight();
+      mToolbar.setLayoutParams(params);
+    } else {
+      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
+      params.height = getSystemBarConfig().getStatusBarHeight();
+      getStatusBar().setLayoutParams(params);
+    }
+
+    mPresenterProfile.request(getGitHubApiModule(), bindUntilEvent(FragmentEvent.PAUSE));
+  }
+
+  @Override public void onDestroy() {
+    mPresenterProfile.detachView();
+    super.onDestroy();
+  }
+
+  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
   }
 
   @OnClick({}) void onClick(View view) {

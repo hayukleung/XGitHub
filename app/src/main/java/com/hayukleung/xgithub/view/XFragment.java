@@ -23,9 +23,9 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
 
   private SystemBarConfig mSystemBarConfig;
 
-  private View mStatusBar;
   private FrameLayout mLayoutRoot;
 
+  private View mStatusBar;
   private LinearLayout mLayoutContent;
   private RelativeLayout mLayoutEmpty;
   private RelativeLayout mLayoutError;
@@ -38,6 +38,29 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
     // mHandler.pause();
   }
 
+  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override public void onResume() {
+    super.onResume();
+    // mHandler.resume();
+  }
+
+  @Override public void onPause() {
+    // mHandler.pause();
+    super.onPause();
+  }
+
+  @Override public void onDestroyView() {
+    mStatusBar = null;
+    mLayoutContent = null;
+    mLayoutEmpty = null;
+    mLayoutError = null;
+    mLayoutLoading = null;
+    super.onDestroyView();
+  }
+
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
@@ -47,6 +70,10 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
 
     mLayoutContent = (LinearLayout) baseView.findViewById(R.id.layout_content);
     mLayoutContent.removeAllViews();
+    mStatusBar = inflater.inflate(R.layout.layout_status_bar, null);
+    mLayoutContent.addView(mStatusBar,
+        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
     mLayoutContent.addView(inflater.inflate(getContentView(), null),
         new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT));
@@ -69,23 +96,12 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
 
   abstract protected View.OnClickListener getRetryListener();
 
-  @Override public void onResume() {
-    super.onResume();
-    // mHandler.resume();
+  protected View getStatusBar() {
+    return this.mStatusBar;
   }
 
-  @Override public void onPause() {
-    // mHandler.pause();
-    super.onPause();
-  }
-
-  @Override public void onDestroyView() {
-    mStatusBar = null;
-    mLayoutContent = null;
-    mLayoutEmpty = null;
-    mLayoutError = null;
-    mLayoutLoading = null;
-    super.onDestroyView();
+  protected View getLayoutContent() {
+    return this.mLayoutContent;
   }
 
   @Override public void showLoading() {
@@ -118,6 +134,13 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
     mLayoutContent.setVisibility(View.GONE);
     mLayoutError.setVisibility(View.GONE);
     mLayoutEmpty.setVisibility(View.VISIBLE);
+  }
+
+  protected SystemBarConfig getSystemBarConfig() {
+    if (null == mSystemBarConfig) {
+      mSystemBarConfig = new SystemBarConfig(getActivity());
+    }
+    return this.mSystemBarConfig;
   }
 
   /**

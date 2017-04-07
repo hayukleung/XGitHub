@@ -56,8 +56,8 @@ public class UIUtils {
       }
       processPrivateAPI(fragment.getActivity().getWindow(), isLight);
     } else {
-      // TODO Android 6.0 以下系统适配
-      // fragment.getStatusBar().setBackgroundColor(color);
+      // Android 6.0 以下系统适配
+      fragment.getStatusBar().setBackgroundColor(color);
     }
   }
 
