@@ -18,6 +18,7 @@ import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.model.Stub;
 import com.hayukleung.xgithub.presenter.PresenterMain;
 import com.hayukleung.xgithub.view.TranslucentStatusCompat;
+import com.hayukleung.xgithub.view.UIUtils;
 import com.hayukleung.xgithub.view.XFragment;
 import javax.inject.Inject;
 
@@ -45,6 +46,7 @@ public class MainFragment extends XFragment<Stub, ContractMain.IPresenterMain>
     mPresenter.attachView(this);
 
     TranslucentStatusCompat.requestTranslucentStatus(getActivity());
+    UIUtils.requestStatusBarLight(this, true);
   }
 
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

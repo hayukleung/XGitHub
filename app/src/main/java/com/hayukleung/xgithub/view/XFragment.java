@@ -31,11 +31,11 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
   private RelativeLayout mLayoutError;
   private RelativeLayout mLayoutLoading;
 
-  private PausedHandler mHandler;
+  // private PausedHandler mHandler;
 
   public XFragment() {
-    mHandler = new XHandler(this);
-    mHandler.pause();
+    // mHandler = new XHandler(this);
+    // mHandler.pause();
   }
 
   @Nullable @Override
@@ -71,11 +71,11 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
 
   @Override public void onResume() {
     super.onResume();
-    mHandler.resume();
+    // mHandler.resume();
   }
 
   @Override public void onPause() {
-    mHandler.pause();
+    // mHandler.pause();
     super.onPause();
   }
 
@@ -134,9 +134,9 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
 
   }
 
-  public PausedHandler getHandler() {
-    return mHandler;
-  }
+  // public PausedHandler getHandler() {
+  // return mHandler;
+  // }
 
   private static class XHandler extends PausedHandler {
 
