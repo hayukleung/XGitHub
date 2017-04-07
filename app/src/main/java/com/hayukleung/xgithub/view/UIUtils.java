@@ -74,7 +74,7 @@ public class UIUtils {
   }
 
   /**
-   * 改变魅族的状态栏字体为黑色，要求FlyMe4以上
+   * 改变魅族的状态栏字体为黑色，要求 FlyMe 4 以上
    *
    * @param window
    * @param isLightStatusBar
@@ -95,8 +95,8 @@ public class UIUtils {
   }
 
   /**
-   * 改变小米的状态栏字体颜色为黑色, 要求MIUI6以上
-   * Tested on: MIUIV7 5.0 Redmi-Note3
+   * 改变小米的状态栏字体颜色为黑色, 要求 MIUI 6 以上
+   * Tested on: MIUI V7 5.0 Redmi-Note3
    *
    * @param window
    * @param lightStatusBar

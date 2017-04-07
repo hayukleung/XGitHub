@@ -22,6 +22,7 @@ import com.hayukleung.xgithub.di.component.ProfileComponent;
 import com.hayukleung.xgithub.di.module.ActivityModule;
 import com.hayukleung.xgithub.model.GitHub;
 import com.hayukleung.xgithub.presenter.PresenterProfile;
+import com.hayukleung.xgithub.view.UIUtils;
 import com.hayukleung.xgithub.view.XFragment;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 import javax.inject.Inject;
@@ -85,6 +86,11 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
 
   @Override protected View.OnClickListener getRetryListener() {
     return null;
+  }
+
+  @Override public void onResume() {
+    super.onResume();
+    UIUtils.requestStatusBarLight(this, true);
   }
 
   @Override public void showContent(GitHub data) {
