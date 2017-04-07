@@ -59,22 +59,23 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-    //      ViewGroup.MarginLayoutParams params =
-    //          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
-    //      params.topMargin = getSystemBarConfig().getStatusBarHeight();
-    //      mToolbar.setLayoutParams(params);
-    //    } else {
-    //      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
-    //      params.height = getSystemBarConfig().getStatusBarHeight();
-    //      getStatusBar().setLayoutParams(params);
-    //    }
+    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    // ViewGroup.MarginLayoutParams params =
+    // (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
+    // params.topMargin = getSystemBarConfig().getStatusBarHeight();
+    // mToolbar.setLayoutParams(params);
+    // } else {
+    // ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
+    // params.height = getSystemBarConfig().getStatusBarHeight();
+    // getStatusBar().setLayoutParams(params);
+    // }
 
     ViewGroup.LayoutParams params = mToolbar.getLayoutParams();
     params.height += getSystemBarConfig().getStatusBarHeight();
     mToolbar.setLayoutParams(params);
     mToolbar.setPadding(0, mToolbar.getPaddingTop() + getSystemBarConfig().getStatusBarHeight(), 0,
         0);
+    mToolbar.setBackgroundColor(Color.argb(mLatestAlpha, 255, 255, 255));
 
     mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     // mSwipeRefreshLayout.setProgressViewEndTarget(false, Screen.getInstance(getActivity()).dp2px(120));
@@ -98,7 +99,8 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
         XLog.e("scrolledY --> " + mScrolledY);
         int scrollY = RecyclerViewUtils.getRecyclerViewScrollY(mRecyclerView);
         int toolbarHeight = mToolbar.getHeight();
-        int alpha = (int) ((float) scrollY / toolbarHeight * 255);
+        int alpha =
+            0 == toolbarHeight ? mLatestAlpha : (int) ((float) scrollY / toolbarHeight * 255);
         if (alpha > 255) alpha = 255;
         if (alpha < 0) alpha = 0;
         if (mScrolledY > mStarAdapter.getStarHeaderHeight(getActivity()) - mToolbar.getHeight()) {
