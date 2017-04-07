@@ -1,7 +1,6 @@
 package com.hayukleung.xgithub.view.star;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import com.hayukleung.xgithub.R;
 import com.hayukleung.xgithub.common.RecyclerViewUtils;
+import com.hayukleung.xgithub.common.wrapper.XLog;
 import com.hayukleung.xgithub.contract.ContractStar.IPresenterStar;
 import com.hayukleung.xgithub.model.Stub;
 import com.hayukleung.xgithub.view.UIUtils;
@@ -36,6 +36,7 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
   private StarAdapter mStarAdapter;
 
   private int mLatestAlpha = 0;
+  private int mScrolledY = 0;
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -58,16 +59,22 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      ViewGroup.MarginLayoutParams params =
-          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
-      params.topMargin = getSystemBarConfig().getStatusBarHeight();
-      mToolbar.setLayoutParams(params);
-    } else {
-      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
-      params.height = getSystemBarConfig().getStatusBarHeight();
-      getStatusBar().setLayoutParams(params);
-    }
+    //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    //      ViewGroup.MarginLayoutParams params =
+    //          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
+    //      params.topMargin = getSystemBarConfig().getStatusBarHeight();
+    //      mToolbar.setLayoutParams(params);
+    //    } else {
+    //      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
+    //      params.height = getSystemBarConfig().getStatusBarHeight();
+    //      getStatusBar().setLayoutParams(params);
+    //    }
+
+    ViewGroup.LayoutParams params = mToolbar.getLayoutParams();
+    params.height += getSystemBarConfig().getStatusBarHeight();
+    mToolbar.setLayoutParams(params);
+    mToolbar.setPadding(0, mToolbar.getPaddingTop() + getSystemBarConfig().getStatusBarHeight(), 0,
+        0);
 
     mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     // mSwipeRefreshLayout.setProgressViewEndTarget(false, Screen.getInstance(getActivity()).dp2px(120));
@@ -87,12 +94,16 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
       }
 
       @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
+        mScrolledY += dy;
+        XLog.e("scrolledY --> " + mScrolledY);
         int scrollY = RecyclerViewUtils.getRecyclerViewScrollY(mRecyclerView);
         int toolbarHeight = mToolbar.getHeight();
         int alpha = (int) ((float) scrollY / toolbarHeight * 255);
         if (alpha > 255) alpha = 255;
         if (alpha < 0) alpha = 0;
+        if (mScrolledY > mStarAdapter.getStarHeaderHeight(getActivity()) - mToolbar.getHeight()) {
+          alpha = 255;
+        }
         if (alpha == 0) {
           UIUtils.requestStatusBarLight(StarFragment.this, false,
               getResources().getColor(R.color.colorPrimary));

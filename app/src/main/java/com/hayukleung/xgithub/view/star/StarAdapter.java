@@ -1,5 +1,6 @@
 package com.hayukleung.xgithub.view.star;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -61,5 +62,9 @@ public class StarAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
   @Override public int getItemCount() {
     return mStubList.size() + 1;
+  }
+
+  public int getStarHeaderHeight(Context context) {
+    return context.getResources().getDimensionPixelOffset(R.dimen.xp40_0);
   }
 }

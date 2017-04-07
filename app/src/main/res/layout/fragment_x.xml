@@ -10,7 +10,7 @@
   <include layout="@layout/layout_error"/>
   <include layout="@layout/layout_loading"/>
 
-  <LinearLayout
+  <FrameLayout
       android:id="@+id/layout_content"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

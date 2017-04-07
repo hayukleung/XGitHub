@@ -26,7 +26,7 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
   private FrameLayout mLayoutRoot;
 
   private View mStatusBar;
-  private LinearLayout mLayoutContent;
+  private FrameLayout mLayoutContent;
   private RelativeLayout mLayoutEmpty;
   private RelativeLayout mLayoutError;
   private RelativeLayout mLayoutLoading;
@@ -68,15 +68,15 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
     View baseView = inflater.inflate(R.layout.fragment_x, container, false);
     mLayoutRoot = (FrameLayout) baseView.findViewById(R.id.layout_root);
 
-    mLayoutContent = (LinearLayout) baseView.findViewById(R.id.layout_content);
+    mLayoutContent = (FrameLayout) baseView.findViewById(R.id.layout_content);
     mLayoutContent.removeAllViews();
+    mLayoutContent.addView(inflater.inflate(getContentView(), null),
+        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT));
     mStatusBar = inflater.inflate(R.layout.layout_status_bar, null);
     mLayoutContent.addView(mStatusBar,
         new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT));
-    mLayoutContent.addView(inflater.inflate(getContentView(), null),
-        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT));
 
     mLayoutEmpty = (RelativeLayout) baseView.findViewById(R.id.layout_empty_root);
     mLayoutEmpty.setVisibility(View.GONE);
@@ -100,7 +100,7 @@ public abstract class XFragment<M extends BaseBean, P extends RXMVPPresenter> ex
     return this.mStatusBar;
   }
 
-  protected View getLayoutContent() {
+  protected FrameLayout getLayoutContent() {
     return this.mLayoutContent;
   }
 

@@ -1,11 +1,12 @@
 package com.hayukleung.xgithub.view.profile;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,12 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
   @BindView(R.id.icon) ImageView mIcon;
   @BindView(R.id.bg) ImageView mBg;
   @BindView(R.id.name) TextView mName;
-  @BindView(R.id.user_layout) LinearLayout mUserLayout;
-  @BindView(R.id.user_header_layout) RelativeLayout mUserHeaderLayout;
+  @BindView(R.id.layout_user) LinearLayout mLayoutUser;
+  @BindView(R.id.header) RelativeLayout mHeader;
   @BindView(R.id.scrollable_layout) CoordinatorLayout mScrollableLayout;
   @BindView(R.id.title) TextView mTitleView;
   @BindView(R.id.action) ImageView mRightView;
+  @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -91,16 +93,28 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
   @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      ViewGroup.MarginLayoutParams params =
-          (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
-      params.topMargin = getSystemBarConfig().getStatusBarHeight();
-      mToolbar.setLayoutParams(params);
-    } else {
-      ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
-      params.height = getSystemBarConfig().getStatusBarHeight();
-      getStatusBar().setLayoutParams(params);
-    }
+    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    // ViewGroup.MarginLayoutParams params =
+    // (ViewGroup.MarginLayoutParams) mToolbar.getLayoutParams();
+    // params.topMargin = getSystemBarConfig().getStatusBarHeight();
+    // mToolbar.setLayoutParams(params);
+    // } else {
+    // ViewGroup.LayoutParams params = getStatusBar().getLayoutParams();
+    // params.height = getSystemBarConfig().getStatusBarHeight();
+    // getStatusBar().setLayoutParams(params);
+    // }
+
+    ViewGroup.LayoutParams params = mToolbar.getLayoutParams();
+    params.height += getSystemBarConfig().getStatusBarHeight();
+    mToolbar.setLayoutParams(params);
+    mToolbar.setPadding(0, mToolbar.getPaddingTop() + getSystemBarConfig().getStatusBarHeight(), 0,
+        0);
+    mLayoutUser.setPadding(0,
+        mLayoutUser.getPaddingTop() + getSystemBarConfig().getStatusBarHeight(), 0, 0);
+
+    mRecyclerView.setLayoutManager(
+        new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+    mRecyclerView.setAdapter(new ProfileAdapter());
 
     mPresenterProfile.request(getGitHubApiModule(), bindUntilEvent(FragmentEvent.PAUSE));
   }
