@@ -66,7 +66,7 @@ public class WelcomeActivity extends FullScreenActivity {
     name.setBackground(null);
     mContent.addView(name, layoutParams);
 
-    CountDownTimer timer = new CountDownTimer(5 * 1000, 500) {
+    CountDownTimer timer = new CountDownTimer(3 * 1000, 3 * 1000) {
       @Override public void onTick(long millisUntilFinished) {
       }
 

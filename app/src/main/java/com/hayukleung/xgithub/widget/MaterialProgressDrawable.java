@@ -45,12 +45,12 @@ import java.util.ArrayList;
 /**
  * Fancy progress indicator for Material theme.
  */
-class MaterialProgressDrawable extends Drawable implements Animatable {
-  static final Interpolator MATERIAL_INTERPOLATOR = new FastOutSlowInInterpolator();
+public class MaterialProgressDrawable extends Drawable implements Animatable {
+  public static final Interpolator MATERIAL_INTERPOLATOR = new FastOutSlowInInterpolator();
   // Maps to ProgressBar.Large style
-  static final int LARGE = 0;
+  public static final int LARGE = 0;
   // Maps to ProgressBar default style
-  static final int DEFAULT = 1;
+  public static final int DEFAULT = 1;
   private static final Interpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
   private static final float FULL_ROTATION = 1080.0f;
   // Maps to ProgressBar default style
@@ -110,7 +110,7 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
   private double mWidth;
   private double mHeight;
 
-  MaterialProgressDrawable(Context context, View parent) {
+  public MaterialProgressDrawable(Context context, View parent) {
     mParent = parent;
     mResources = context.getResources();
 
@@ -214,16 +214,12 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
     c.restoreToCount(saveCount);
   }
 
-  @Override public int getIntrinsicHeight() {
-    return (int) mHeight;
-  }
-
   @SuppressWarnings("unused") private float getRotation() {
     return mRotation;
   }
 
-  @Override public int getIntrinsicWidth() {
-    return (int) mWidth;
+  @Override public int getIntrinsicHeight() {
+    return (int) mHeight;
   }
 
   @SuppressWarnings("unused") void setRotation(float rotation) {
@@ -247,8 +243,8 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
     }
   }
 
-  @Override public void setAlpha(int alpha) {
-    mRing.setAlpha(alpha);
+  @Override public int getIntrinsicWidth() {
+    return (int) mWidth;
   }
 
   @Override public void stop() {
@@ -257,10 +253,6 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
     mRing.setShowArrow(false);
     mRing.setColorIndex(0);
     mRing.resetOriginals();
-  }
-
-  public int getAlpha() {
-    return mRing.getAlpha();
   }
 
   @Override public boolean isRunning() {
@@ -275,12 +267,12 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
     return false;
   }
 
-  @Override public void setColorFilter(ColorFilter colorFilter) {
-    mRing.setColorFilter(colorFilter);
-  }
-
   float getMinProgressArc(Ring ring) {
     return (float) Math.toRadians(ring.getStrokeWidth() / (2 * Math.PI * ring.getCenterRadius()));
+  }
+
+  @Override public void setAlpha(int alpha) {
+    mRing.setAlpha(alpha);
   }
 
   // Adapted from ArgbEvaluator.java
@@ -320,8 +312,8 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
     }
   }
 
-  @Override public int getOpacity() {
-    return PixelFormat.TRANSLUCENT;
+  public int getAlpha() {
+    return mRing.getAlpha();
   }
 
   void applyFinishTranslation(float interpolatedTime, Ring ring) {
@@ -423,6 +415,10 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
       }
     });
     mAnimation = animation;
+  }
+
+  @Override public void setColorFilter(ColorFilter colorFilter) {
+    mRing.setColorFilter(colorFilter);
   }
 
   @Retention(RetentionPolicy.SOURCE) @IntDef({ LARGE, DEFAULT })
@@ -743,4 +739,16 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
       setRotation(0);
     }
   }
+
+  @Override public int getOpacity() {
+    return PixelFormat.TRANSLUCENT;
+  }
+
+
+
+
+
+
+
+
 }

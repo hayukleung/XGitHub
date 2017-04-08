@@ -1,1 +1,1 @@
-include ':app', ':mvp', ':D-clock-AndroidSystemUiTraining'
+include ':app', ':mvp', ':D-clock-AndroidSystemUiTraining', ':Gordon-H-ImitationOfWechat'

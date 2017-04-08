@@ -29,7 +29,7 @@ import com.hayukleung.xgithub.widget.SwipeRefreshLayout;
 
 public class StarFragment extends XFragment<Stub, IPresenterStar> implements StarView {
 
-  @BindView(R.id.swipe_refresh_layout) com.hayukleung.xgithub.widget.SwipeRefreshLayout
+  @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout
       mSwipeRefreshLayout;
   @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
   @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -78,6 +78,10 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
         0);
     mToolbar.setBackgroundColor(Color.argb(mLatestAlpha, 255, 255, 255));
 
+    // CustomProgressDrawable drawable = new CustomProgressDrawable(getActivity(), mSwipeRefreshLayout);
+    // Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moments_refresh_icon);
+    // drawable.setBitmap(bitmap);
+    // mSwipeRefreshLayout.setProgressView(drawable);
     mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     // mSwipeRefreshLayout.setProgressViewEndTarget(false, Screen.getInstance(getActivity()).dp2px(120));
     mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
