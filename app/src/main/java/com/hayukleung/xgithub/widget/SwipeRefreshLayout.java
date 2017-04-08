@@ -42,6 +42,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
+import com.hayukleung.xgithub.common.wrapper.XLog;
 
 /**
  * The SwipeRefreshLayout should be used whenever the user can refresh the
@@ -245,7 +246,7 @@ public class SwipeRefreshLayout extends ViewGroup
   }
 
   void moveToStart(float interpolatedTime) {
-    int targetTop = 0;
+    int targetTop;
     targetTop = (mFrom + (int) ((mOriginalOffsetTop - mFrom) * interpolatedTime));
     int offset = targetTop - mCircleView.getTop();
     setTargetOffsetTopAndBottom(offset, false /* requires update */);
@@ -361,6 +362,69 @@ public class SwipeRefreshLayout extends ViewGroup
         break;
       }
     }
+  }
+
+  private void ensureTarget() {
+    // Don't bother getting the parent height if the parent hasn't been laid
+    // out yet.
+    if (mTarget == null) {
+      for (int i = 0; i < getChildCount(); i++) {
+        View child = getChildAt(i);
+        if (!child.equals(mCircleView)) {
+          mTarget = child;
+          break;
+        }
+      }
+    }
+  }
+
+  void setTargetOffsetTopAndBottom(int offset, boolean requiresUpdate) {
+    mCircleView.bringToFront();
+    ViewCompat.offsetTopAndBottom(mCircleView, offset);
+    mCurrentTargetOffsetTop = mCircleView.getTop();
+    if (requiresUpdate && android.os.Build.VERSION.SDK_INT < 11) {
+      invalidate();
+    }
+  }
+
+  void reset() {
+    mCircleView.clearAnimation();
+    mProgress.stop();
+    mCircleView.setVisibility(View.GONE);
+    setColorViewAlpha(MAX_ALPHA);
+    // Return the circle to its start position
+    if (mScale) {
+      setAnimationProgress(0 /* animation complete and view is hidden */);
+    } else {
+      setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop, true /* requires update */);
+    }
+    mCurrentTargetOffsetTop = mCircleView.getTop();
+  }
+
+  @SuppressLint("NewApi") private void setColorViewAlpha(int targetAlpha) {
+    mCircleView.getBackground().setAlpha(targetAlpha);
+    mProgress.setAlpha(targetAlpha);
+  }
+
+  /**
+   * Pre API 11, this does an alpha animation.
+   *
+   * @param progress
+   */
+  void setAnimationProgress(float progress) {
+    if (isAlphaUsedForScale()) {
+      setColorViewAlpha((int) (progress * MAX_ALPHA));
+    } else {
+      ViewCompat.setScaleX(mCircleView, progress);
+      ViewCompat.setScaleY(mCircleView, progress);
+    }
+  }
+
+  /**
+   * Pre API 11, alpha is used to make the progress circle appear instead of scale.
+   */
+  private boolean isAlphaUsedForScale() {
+    return android.os.Build.VERSION.SDK_INT < 11;
   }
 
   /**
@@ -591,20 +655,6 @@ public class SwipeRefreshLayout extends ViewGroup
     mProgress.setColorSchemeColors(colors);
   }
 
-  private void ensureTarget() {
-    // Don't bother getting the parent height if the parent hasn't been laid
-    // out yet.
-    if (mTarget == null) {
-      for (int i = 0; i < getChildCount(); i++) {
-        View child = getChildAt(i);
-        if (!child.equals(mCircleView)) {
-          mTarget = child;
-          break;
-        }
-      }
-    }
-  }
-
   /**
    * @return Whether the SwipeRefreshWidget is actively showing refresh
    * progress.
@@ -677,6 +727,8 @@ public class SwipeRefreshLayout extends ViewGroup
       super.requestDisallowInterceptTouchEvent(b);
     }
   }
+
+  // NestedScrollingParent
 
   @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
     ensureTarget();
@@ -758,57 +810,6 @@ public class SwipeRefreshLayout extends ViewGroup
     reset();
   }
 
-  void reset() {
-    mCircleView.clearAnimation();
-    mProgress.stop();
-    mCircleView.setVisibility(View.GONE);
-    setColorViewAlpha(MAX_ALPHA);
-    // Return the circle to its start position
-    if (mScale) {
-      setAnimationProgress(0 /* animation complete and view is hidden */);
-    } else {
-      setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop, true /* requires update */);
-    }
-    mCurrentTargetOffsetTop = mCircleView.getTop();
-  }
-
-  @SuppressLint("NewApi") private void setColorViewAlpha(int targetAlpha) {
-    mCircleView.getBackground().setAlpha(targetAlpha);
-    mProgress.setAlpha(targetAlpha);
-  }
-
-  // NestedScrollingParent
-
-  /**
-   * Pre API 11, this does an alpha animation.
-   *
-   * @param progress
-   */
-  void setAnimationProgress(float progress) {
-    if (isAlphaUsedForScale()) {
-      setColorViewAlpha((int) (progress * MAX_ALPHA));
-    } else {
-      ViewCompat.setScaleX(mCircleView, progress);
-      ViewCompat.setScaleY(mCircleView, progress);
-    }
-  }
-
-  void setTargetOffsetTopAndBottom(int offset, boolean requiresUpdate) {
-    mCircleView.bringToFront();
-    ViewCompat.offsetTopAndBottom(mCircleView, offset);
-    mCurrentTargetOffsetTop = mCircleView.getTop();
-    if (requiresUpdate && android.os.Build.VERSION.SDK_INT < 11) {
-      invalidate();
-    }
-  }
-
-  /**
-   * Pre API 11, alpha is used to make the progress circle appear instead of scale.
-   */
-  private boolean isAlphaUsedForScale() {
-    return android.os.Build.VERSION.SDK_INT < 11;
-  }
-
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
     final int width = getMeasuredWidth();
     final int height = getMeasuredHeight();
@@ -864,10 +865,6 @@ public class SwipeRefreshLayout extends ViewGroup
     stopNestedScroll();
   }
 
-  @Override public void setNestedScrollingEnabled(boolean enabled) {
-    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-  }
-
   @Override
   public void onNestedScroll(final View target, final int dxConsumed, final int dyConsumed,
       final int dxUnconsumed, final int dyUnconsumed) {
@@ -886,8 +883,8 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public boolean isNestedScrollingEnabled() {
-    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
+  @Override public void setNestedScrollingEnabled(boolean enabled) {
+    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
   }
 
   @Override public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
@@ -920,35 +917,25 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public boolean startNestedScroll(int axes) {
-    return mNestedScrollingChildHelper.startNestedScroll(axes);
-  }
-
   @Override
   public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
     return dispatchNestedFling(velocityX, velocityY, consumed);
   }
 
-  @Override public void stopNestedScroll() {
-    mNestedScrollingChildHelper.stopNestedScroll();
+  @Override public boolean isNestedScrollingEnabled() {
+    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
   }
 
   @Override public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
     return dispatchNestedPreFling(velocityX, velocityY);
   }
 
-  @Override public boolean hasNestedScrollingParent() {
-    return mNestedScrollingChildHelper.hasNestedScrollingParent();
-  }
-
   @Override public int getNestedScrollAxes() {
     return mNestedScrollingParentHelper.getNestedScrollAxes();
   }
 
-  @Override public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
-      int dyUnconsumed, int[] offsetInWindow) {
-    return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed,
-        dyUnconsumed, offsetInWindow);
+  @Override public boolean startNestedScroll(int axes) {
+    return mNestedScrollingChildHelper.startNestedScroll(axes);
   }
 
   /**
@@ -972,11 +959,6 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override
-  public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-    return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
-  }
-
   @SuppressLint("NewApi") private void startDragging(float y) {
     final float yDiff = y - mInitialDownY;
     if (yDiff > mTouchSlop && !mIsBeingDragged) {
@@ -984,6 +966,10 @@ public class SwipeRefreshLayout extends ViewGroup
       mIsBeingDragged = true;
       mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
     }
+  }
+
+  @Override public void stopNestedScroll() {
+    mNestedScrollingChildHelper.stopNestedScroll();
   }
 
   private void onSecondaryPointerUp(MotionEvent ev) {
@@ -1001,15 +987,17 @@ public class SwipeRefreshLayout extends ViewGroup
     return animation != null && animation.hasStarted() && !animation.hasEnded();
   }
 
-  @Override public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-    return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+  @Override public boolean hasNestedScrollingParent() {
+    return mNestedScrollingChildHelper.hasNestedScrollingParent();
   }
 
   @SuppressLint("NewApi") private void moveSpinner(float overscrollTop) {
     mProgress.showArrow(true);
+
     float originalDragPercent = overscrollTop / mTotalDragDistance;
 
     float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
+
     float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
     float extraOS = Math.abs(overscrollTop) - mTotalDragDistance;
     float slingshotDist =
@@ -1049,13 +1037,11 @@ public class SwipeRefreshLayout extends ViewGroup
     mProgress.setStartEndTrim(0f, Math.min(MAX_PROGRESS_ANGLE, strokeStart));
     mProgress.setArrowScale(Math.min(1f, adjustedPercent));
 
-    float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
+    // float rotation = - (-0.25f +.4f * adjustedPercent + tensionPercent * 2) * .5f;
+    float rotation = 40000f / overscrollTop % 360f;
+    XLog.e("srl --> moveSpinner - rotation - " + rotation);
     mProgress.setProgressRotation(rotation);
     setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
-  }
-
-  @Override public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-    return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
   }
 
   private void finishSpinner(float overscrollTop) {
@@ -1087,6 +1073,12 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
+  @Override public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
+      int dyUnconsumed, int[] offsetInWindow) {
+    return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed,
+        dyUnconsumed, offsetInWindow);
+  }
+
   private void animateOffsetToCorrectPosition(int from, AnimationListener listener) {
     mFrom = from;
     mAnimateToCorrectPosition.reset();
@@ -1114,6 +1106,11 @@ public class SwipeRefreshLayout extends ViewGroup
       mCircleView.clearAnimation();
       mCircleView.startAnimation(mAnimateToStartPosition);
     }
+  }
+
+  @Override
+  public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+    return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
   }
 
   @SuppressLint("NewApi") private void startScaleDownReturnToStartAnimation(int from,
@@ -1165,4 +1162,24 @@ public class SwipeRefreshLayout extends ViewGroup
      */
     boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child);
   }
+
+  @Override public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+    return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+  }
+
+  @Override public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+    return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 }

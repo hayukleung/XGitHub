@@ -38,6 +38,7 @@ import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
+import com.hayukleung.xgithub.common.wrapper.XLog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   float mRotationCount;
   boolean mFinishing;
   /** Canvas rotation in degrees. */
-  private float mRotation;
+  // private float mRotation;
   private Resources mResources;
   private View mParent;
   private Animation mAnimation;
@@ -209,7 +210,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   @Override public void draw(Canvas c) {
     final Rect bounds = getBounds();
     final int saveCount = c.save();
-    c.rotate(mRotation, bounds.exactCenterX(), bounds.exactCenterY());
+    c.rotate(0f, bounds.exactCenterX(), bounds.exactCenterY());
     mRing.draw(c, bounds);
     c.restoreToCount(saveCount);
   }
@@ -230,20 +231,21 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     }
   }
 
-  @Override public int getIntrinsicHeight() {
-    return (int) mHeight;
-  }
-
   @Override public void stop() {
     mParent.clearAnimation();
     setRotation(0);
     mRing.setShowArrow(false);
     mRing.setColorIndex(0);
-    // mRing.resetOriginals();
+    mRing.resetOriginals();
   }
 
-  @SuppressWarnings("unused") void setRotation(float rotation) {
-    mRotation = rotation;
+  @Override public int getIntrinsicHeight() {
+    return (int) mHeight;
+  }
+
+  void setRotation(float rotation) {
+    // mRotation = rotation;
+    // mRotation %= 360f;
     invalidateSelf();
   }
 
@@ -257,10 +259,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       }
     }
     return false;
-  }
-
-  @Override public int getIntrinsicWidth() {
-    return (int) mWidth;
   }
 
   float getMinProgressArc(Shyaringan ring) {
@@ -286,6 +284,10 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         * (endR - startR))) << 16)
         | (int) ((startG + (int) (fraction * (endG - startG))) << 8)
         | (int) ((startB + (int) (fraction * (endB - startB))));
+  }
+
+  @Override public int getIntrinsicWidth() {
+    return (int) mWidth;
   }
 
   /**
@@ -322,10 +324,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     ring.setRotation(rotation);
   }
 
-  @Override public void setAlpha(int alpha) {
-    mRing.setAlpha(alpha);
-  }
-
   private void setupAnimators() {
     final Shyaringan ring = mRing;
     final Animation animation = new Animation() {
@@ -344,37 +342,34 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
 
           // Moving the start trim only occurs in the first 50% of a
           // single ring animation
-          if (interpolatedTime <= START_TRIM_DURATION_OFFSET) {
-            // scale the interpolatedTime so that the full
-            // transformation from 0 - 1 takes place in the
-            // remaining time
-            final float scaledTime = (interpolatedTime) / (1.0f - START_TRIM_DURATION_OFFSET);
-            final float startTrim = startingTrim + ((MAX_PROGRESS_ARC - minProgressArc)
-                * MATERIAL_INTERPOLATOR.getInterpolation(scaledTime));
-            ring.setStartTrim(startTrim);
-          }
+          // if (interpolatedTime <= START_TRIM_DURATION_OFFSET) {
+          // scale the interpolatedTime so that the full
+          // transformation from 0 - 1 takes place in the
+          // remaining time
+          // final float scaledTime = (interpolatedTime) / (1.0f - START_TRIM_DURATION_OFFSET);
+          // final float startTrim = startingTrim + ((MAX_PROGRESS_ARC - minProgressArc)
+          // * MATERIAL_INTERPOLATOR.getInterpolation(scaledTime));
+          // ring.setStartTrim(startTrim);
+          // }
 
           // Moving the end trim starts after 50% of a single ring
           // animation completes
-          if (interpolatedTime > END_TRIM_START_DELAY_OFFSET) {
-            // scale the interpolatedTime so that the full
-            // transformation from 0 - 1 takes place in the
-            // remaining time
-            final float minArc = MAX_PROGRESS_ARC - minProgressArc;
-            float scaledTime = (interpolatedTime - START_TRIM_DURATION_OFFSET) / (1.0f
-                - START_TRIM_DURATION_OFFSET);
-            final float endTrim =
-                startingEndTrim + (minArc * MATERIAL_INTERPOLATOR.getInterpolation(scaledTime));
-            ring.setEndTrim(endTrim);
-          }
+          // if (interpolatedTime > END_TRIM_START_DELAY_OFFSET) {
+          // scale the interpolatedTime so that the full
+          // transformation from 0 - 1 takes place in the
+          // remaining time
+          // final float minArc = MAX_PROGRESS_ARC - minProgressArc;
+          // float scaledTime = (interpolatedTime - START_TRIM_DURATION_OFFSET) / (1.0f - START_TRIM_DURATION_OFFSET);
+          // final float endTrim = startingEndTrim + (minArc * MATERIAL_INTERPOLATOR.getInterpolation(scaledTime));
+          // ring.setEndTrim(endTrim);
+          // }
 
-          final float rotation = startingRotation + (0.25f * interpolatedTime);
+          final float rotation = (startingRotation + (500f * interpolatedTime)) % 360f;
+          XLog.e("srl --> rotation - %f - setRotation - shyaringan", rotation);
           ring.setRotation(rotation);
 
-          float groupRotation =
-              ((FULL_ROTATION / NUM_POINTS) * interpolatedTime) + (FULL_ROTATION * (mRotationCount
-                  / NUM_POINTS));
-          setRotation(groupRotation);
+          // float groupRotation = ((FULL_ROTATION / NUM_POINTS) * interpolatedTime) + (FULL_ROTATION * (mRotationCount / NUM_POINTS));
+          // setRotation(groupRotation);
         }
       }
     };
@@ -458,6 +453,14 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       // mArrowPaint.setStyle(Paint.Style.FILL);
       // mArrowPaint.setAntiAlias(true);
 
+      mPaintCircle = new Paint();
+      mPaintCircle.setAntiAlias(true);
+
+      mPaintGogok = new Paint();
+      mPaintGogok.setAntiAlias(true);
+      mPaintGogok.setStyle(Paint.Style.FILL);
+      mPaintGogok.setColor(Color.argb(255, 22, 22, 22));
+
       mPathGogok = new Path();
     }
 
@@ -473,18 +476,21 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       arcBounds.set(bounds);
       arcBounds.inset(mStrokeInset, mStrokeInset);
 
-      final float startAngle = (mStartTrim + mRotation) * 360;
-      final float endAngle = (mEndTrim + mRotation) * 360;
-      float sweepAngle = endAngle - startAngle;
+      // final float startAngle = (mStartTrim + mRotation) * 360;
+      // final float endAngle = (mEndTrim + mRotation) * 360;
+      // float sweepAngle = endAngle - startAngle;
 
       mPaint.setColor(mCurrentColor);
-      c.drawArc(arcBounds, startAngle, sweepAngle, false, mPaint);
-      c.rotate(startAngle + sweepAngle - ARROW_OFFSET_ANGLE, bounds.exactCenterX(),
-          bounds.exactCenterY());
+      // c.drawArc(arcBounds, startAngle, sweepAngle, false, mPaint);
+      // c.rotate(startAngle + sweepAngle - ARROW_OFFSET_ANGLE, bounds.exactCenterX(), bounds.exactCenterY());
+      c.rotate(mRotation, bounds.exactCenterX(), bounds.exactCenterY());
 
       if (mAlpha < 255) {
         mCirclePaint.setColor(mBackgroundColor);
         mCirclePaint.setAlpha(255 - mAlpha);
+
+        mPaintCircle.setAlpha(255 - mAlpha);
+        // mPaintGogok.setAlpha(255 - mAlpha);
         c.drawCircle(bounds.exactCenterX(), bounds.exactCenterY(), bounds.width() / 2,
             mCirclePaint);
       }
@@ -494,10 +500,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       int radius = bounds.width() / 2 / 10 * 9;
       int strokeWidthUnit = bounds.width() / 200;
 
-      if (null == mPaintCircle) {
-        mPaintCircle = new Paint();
-        mPaintCircle.setAntiAlias(true);
-      }
       // 绘制背景颜色
       {
         mPaintCircle.setStyle(Paint.Style.FILL);
@@ -525,13 +527,8 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         int count = GOGOK_COUNT;
         while (count-- > 0) {
 
-          if (null == mPaintGogok) {
-            mPaintGogok = new Paint();
-            mPaintGogok.setAntiAlias(true);
-            mPaintGogok.setStyle(Paint.Style.FILL);
-            mPaintGogok.setColor(Color.argb(255, 22, 22, 22));
-            mPaintGogok.setStrokeWidth(strokeWidthUnit);
-          }
+          mPaintGogok.setStrokeWidth(strokeWidthUnit);
+
           float rGogokUnit = (float) bounds.width() / 1000f;
           if (null == mRectFGogok) {
             mRectFGogok = new RectF();
@@ -582,7 +579,8 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     private float getAngle() {
       // mAngle += 6;
       // mAngle %= 360;
-      return mRotation;
+      // return mRotation;
+      return 0;
     }
 
     /**
@@ -785,6 +783,10 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     }
   }
 
+  @Override public void setAlpha(int alpha) {
+    mRing.setAlpha(alpha);
+  }
+
   public int getAlpha() {
     return mRing.getAlpha();
   }
@@ -792,10 +794,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   @Override public void setColorFilter(ColorFilter colorFilter) {
     mRing.setColorFilter(colorFilter);
   }
-
-
-
-
 
   @Override public int getOpacity() {
     return PixelFormat.TRANSLUCENT;
