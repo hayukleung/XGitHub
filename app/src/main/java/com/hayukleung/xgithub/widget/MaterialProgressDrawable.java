@@ -221,7 +221,8 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     // Already showing some part of the ring
     if (mRing.getEndTrim() != mRing.getStartTrim()) {
       mFinishing = true;
-      mAnimation.setDuration(ANIMATION_DURATION / 2);
+      // mAnimation.setDuration(ANIMATION_DURATION / 2);
+      mAnimation.setDuration(0);
       mParent.startAnimation(mAnimation);
     } else {
       mRing.setColorIndex(0);
@@ -233,20 +234,10 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
 
   @Override public void stop() {
     mParent.clearAnimation();
-    setRotation(0);
+    invalidateSelf();
     mRing.setShowArrow(false);
     mRing.setColorIndex(0);
     mRing.resetOriginals();
-  }
-
-  @Override public int getIntrinsicHeight() {
-    return (int) mHeight;
-  }
-
-  void setRotation(float rotation) {
-    // mRotation = rotation;
-    // mRotation %= 360f;
-    invalidateSelf();
   }
 
   @Override public boolean isRunning() {
@@ -259,6 +250,10 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       }
     }
     return false;
+  }
+
+  @Override public int getIntrinsicHeight() {
+    return (int) mHeight;
   }
 
   float getMinProgressArc(Shyaringan ring) {
@@ -284,10 +279,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         * (endR - startR))) << 16)
         | (int) ((startG + (int) (fraction * (endG - startG))) << 8)
         | (int) ((startB + (int) (fraction * (endB - startB))));
-  }
-
-  @Override public int getIntrinsicWidth() {
-    return (int) mWidth;
   }
 
   /**
@@ -321,7 +312,12 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     final float rotation =
         ring.getStartingRotation() + ((targetRotation - ring.getStartingRotation())
             * interpolatedTime);
+    XLog.e("srl --> ring " + rotation);
     ring.setRotation(rotation);
+  }
+
+  @Override public int getIntrinsicWidth() {
+    return (int) mWidth;
   }
 
   private void setupAnimators() {
@@ -379,6 +375,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     animation.setAnimationListener(new Animation.AnimationListener() {
 
       @Override public void onAnimationStart(Animation animation) {
+        XLog.e("srl --> refresh 1 - " + System.currentTimeMillis());
         mRotationCount = 0;
       }
 

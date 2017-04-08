@@ -3,15 +3,16 @@ package com.hayukleung.xgithub.view.star;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
+import butterknife.OnClick;
 import com.hayukleung.xgithub.R;
 import com.hayukleung.xgithub.common.RecyclerViewUtils;
-import com.hayukleung.xgithub.common.wrapper.XLog;
 import com.hayukleung.xgithub.contract.ContractStar.IPresenterStar;
 import com.hayukleung.xgithub.model.Stub;
 import com.hayukleung.xgithub.view.UIUtils;
@@ -101,7 +102,6 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
 
       @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         mScrolledY += dy;
-        XLog.e("scrolledY --> " + mScrolledY);
         int scrollY = RecyclerViewUtils.getRecyclerViewScrollY(mRecyclerView);
         int toolbarHeight = mToolbar.getHeight();
         int alpha =
@@ -113,14 +113,18 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
         }
         if (alpha == 0) {
           UIUtils.requestStatusBarLight(StarFragment.this, false,
-              getResources().getColor(R.color.colorPrimary));
+              ContextCompat.getColor(getActivity(), R.color.colorPrimary));
         } else {
           UIUtils.requestStatusBarLight(StarFragment.this, true,
-              getResources().getColor(R.color.colorPrimary));
+              ContextCompat.getColor(getActivity(), R.color.colorPrimary));
         }
         mToolbar.setBackgroundColor(Color.argb(alpha, 255, 255, 255));
         mLatestAlpha = alpha;
       }
     });
+  }
+
+  @OnClick({ R.id.stop }) public void onClick() {
+    mSwipeRefreshLayout.setRefreshing(false);
   }
 }

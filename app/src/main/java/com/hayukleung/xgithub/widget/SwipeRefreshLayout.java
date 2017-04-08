@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
 import com.hayukleung.xgithub.common.wrapper.XLog;
@@ -108,6 +109,7 @@ public class SwipeRefreshLayout extends ViewGroup
   private final int[] mParentScrollConsumed = new int[2];
   private final int[] mParentOffsetInWindow = new int[2];
   private final DecelerateInterpolator mDecelerateInterpolator;
+  private final LinearInterpolator mLinearInterpolator;
   protected int mFrom;
   protected int mOriginalOffsetTop;
   OnRefreshListener mListener;
@@ -129,8 +131,8 @@ public class SwipeRefreshLayout extends ViewGroup
   boolean mUsingCustomStart;
   private final Animation mAnimateToCorrectPosition = new Animation() {
     @Override public void applyTransformation(float interpolatedTime, Transformation t) {
-      int targetTop = 0;
-      int endTarget = 0;
+      int targetTop;
+      int endTarget;
       if (!mUsingCustomStart) {
         endTarget = mSpinnerOffsetEnd - Math.abs(mOriginalOffsetTop);
       } else {
@@ -214,6 +216,7 @@ public class SwipeRefreshLayout extends ViewGroup
 
     setWillNotDraw(false);
     mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
+    mLinearInterpolator = new LinearInterpolator();
 
     final DisplayMetrics metrics = getResources().getDisplayMetrics();
     mCircleDiameter = (int) (CIRCLE_DIAMETER * metrics.density);
@@ -883,10 +886,6 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public void setNestedScrollingEnabled(boolean enabled) {
-    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-  }
-
   @Override public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
     // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
     // before allowing the list to scroll
@@ -917,13 +916,13 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
+  @Override public void setNestedScrollingEnabled(boolean enabled) {
+    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+  }
+
   @Override
   public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
     return dispatchNestedFling(velocityX, velocityY, consumed);
-  }
-
-  @Override public boolean isNestedScrollingEnabled() {
-    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
   }
 
   @Override public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
@@ -934,8 +933,8 @@ public class SwipeRefreshLayout extends ViewGroup
     return mNestedScrollingParentHelper.getNestedScrollAxes();
   }
 
-  @Override public boolean startNestedScroll(int axes) {
-    return mNestedScrollingChildHelper.startNestedScroll(axes);
+  @Override public boolean isNestedScrollingEnabled() {
+    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
   }
 
   /**
@@ -968,10 +967,6 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public void stopNestedScroll() {
-    mNestedScrollingChildHelper.stopNestedScroll();
-  }
-
   private void onSecondaryPointerUp(MotionEvent ev) {
     final int pointerIndex = MotionEventCompat.getActionIndex(ev);
     final int pointerId = ev.getPointerId(pointerIndex);
@@ -983,12 +978,12 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  private boolean isAnimationRunning(Animation animation) {
-    return animation != null && animation.hasStarted() && !animation.hasEnded();
+  @Override public boolean startNestedScroll(int axes) {
+    return mNestedScrollingChildHelper.startNestedScroll(axes);
   }
 
-  @Override public boolean hasNestedScrollingParent() {
-    return mNestedScrollingChildHelper.hasNestedScrollingParent();
+  private boolean isAnimationRunning(Animation animation) {
+    return animation != null && animation.hasStarted() && !animation.hasEnded();
   }
 
   @SuppressLint("NewApi") private void moveSpinner(float overscrollTop) {
@@ -1073,10 +1068,8 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
-      int dyUnconsumed, int[] offsetInWindow) {
-    return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed,
-        dyUnconsumed, offsetInWindow);
+  @Override public void stopNestedScroll() {
+    mNestedScrollingChildHelper.stopNestedScroll();
   }
 
   private void animateOffsetToCorrectPosition(int from, AnimationListener listener) {
@@ -1108,11 +1101,6 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override
-  public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-    return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
-  }
-
   @SuppressLint("NewApi") private void startScaleDownReturnToStartAnimation(int from,
       Animation.AnimationListener listener) {
     mFrom = from;
@@ -1134,6 +1122,10 @@ public class SwipeRefreshLayout extends ViewGroup
     }
     mCircleView.clearAnimation();
     mCircleView.startAnimation(mScaleDownToStartAnimation);
+  }
+
+  @Override public boolean hasNestedScrollingParent() {
+    return mNestedScrollingChildHelper.hasNestedScrollingParent();
   }
 
   /**
@@ -1163,6 +1155,23 @@ public class SwipeRefreshLayout extends ViewGroup
     boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child);
   }
 
+  @Override public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
+      int dyUnconsumed, int[] offsetInWindow) {
+    return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed,
+        dyUnconsumed, offsetInWindow);
+  }
+
+  @Override
+  public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+    return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
+  }
+
+
+
+
+
+
+
   @Override public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
     return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
   }
@@ -1170,16 +1179,4 @@ public class SwipeRefreshLayout extends ViewGroup
   @Override public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
     return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
   }
-
-
-
-
-
-
-
-
-
-
-
-
 }

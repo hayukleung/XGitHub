@@ -16,6 +16,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/xp20.0"
         android:focusable="false"
         android:focusableInTouchMode="false"
         />
@@ -24,6 +25,14 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
+        />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/xp20.0"
+        android:layout_gravity="bottom"
+        android:text="stop refresh"
         />
   </FrameLayout>
 </com.hayukleung.xgithub.widget.SwipeRefreshLayout>
