@@ -3,7 +3,6 @@ package com.hayukleung.xgithub.view.star;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +16,7 @@ import com.hayukleung.xgithub.contract.ContractStar.IPresenterStar;
 import com.hayukleung.xgithub.model.Stub;
 import com.hayukleung.xgithub.view.UIUtils;
 import com.hayukleung.xgithub.view.XFragment;
+import com.hayukleung.xgithub.widget.SwipeRefreshLayout;
 
 /**
  * XGitHub
@@ -29,7 +29,8 @@ import com.hayukleung.xgithub.view.XFragment;
 
 public class StarFragment extends XFragment<Stub, IPresenterStar> implements StarView {
 
-  @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
+  @BindView(R.id.swipe_refresh_layout) com.hayukleung.xgithub.widget.SwipeRefreshLayout
+      mSwipeRefreshLayout;
   @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
   @BindView(R.id.toolbar) Toolbar mToolbar;
 

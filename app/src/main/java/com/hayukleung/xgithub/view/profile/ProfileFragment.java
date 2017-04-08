@@ -2,9 +2,6 @@ package com.hayukleung.xgithub.view.profile;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,17 +41,13 @@ public class ProfileFragment extends XFragment<GitHub, ContractProfile.IPresente
 
   @Inject protected PresenterProfile mPresenterProfile;
 
-  @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
-  @BindView(R.id.bar_layout) AppBarLayout mBarLayout;
   @BindView(R.id.toolbar) Toolbar mToolbar;
   @BindView(R.id.icon) ImageView mIcon;
   @BindView(R.id.bg) ImageView mBg;
   @BindView(R.id.name) TextView mName;
   @BindView(R.id.layout_user) LinearLayout mLayoutUser;
   @BindView(R.id.header) RelativeLayout mHeader;
-  @BindView(R.id.scrollable_layout) CoordinatorLayout mScrollableLayout;
   @BindView(R.id.title) TextView mTitleView;
-  @BindView(R.id.action) ImageView mRightView;
   @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
