@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hayukleung.xgithub.widget;
+package com.hayukleung.xgithub.widget.srl;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -46,12 +46,12 @@ import java.util.ArrayList;
 /**
  * Fancy progress indicator for Material theme.
  */
-public class MaterialProgressDrawable extends Drawable implements Animatable {
+class ShyaringanProgressDrawable extends Drawable implements Animatable {
   public static final Interpolator MATERIAL_INTERPOLATOR = new FastOutSlowInInterpolator();
   // Maps to ProgressBar.Large style
-  public static final int LARGE = 0;
+  static final int LARGE = 0;
   // Maps to ProgressBar default style
-  public static final int DEFAULT = 1;
+  static final int DEFAULT = 1;
   private static final Interpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
   private static final float FULL_ROTATION = 1080.0f;
   // Maps to ProgressBar default style
@@ -89,6 +89,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   /** The indicator ring, used to manage animation state. */
   private final Shyaringan mRing;
   private final Callback mCallback = new Callback() {
+
     @Override public void invalidateDrawable(Drawable d) {
       invalidateSelf();
     }
@@ -111,7 +112,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   private double mWidth;
   private double mHeight;
 
-  public MaterialProgressDrawable(Context context, View parent) {
+  public ShyaringanProgressDrawable(Context context, View parent) {
     mParent = parent;
     mResources = context.getResources();
 
@@ -141,8 +142,8 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
    * Set the overall size for the progress spinner. This updates the radius
    * and stroke width of the ring.
    *
-   * @param size One of {@link MaterialProgressDrawable.LARGE} or
-   * {@link MaterialProgressDrawable.DEFAULT}
+   * @param size One of {@link ShyaringanProgressDrawable.LARGE} or
+   * {@link ShyaringanProgressDrawable.DEFAULT}
    */
   public void updateSizes(@ProgressDrawableSize int size) {
     if (size == LARGE) {
@@ -152,13 +153,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
       setSizeParameters(CIRCLE_DIAMETER, CIRCLE_DIAMETER, CENTER_RADIUS, STROKE_WIDTH, ARROW_WIDTH,
           ARROW_HEIGHT);
     }
-  }
-
-  /**
-   * @param show Set to true to display the arrowhead on the progress spinner.
-   */
-  public void showArrow(boolean show) {
-    mRing.setShowArrow(show);
   }
 
   /**
@@ -235,7 +229,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   @Override public void stop() {
     mParent.clearAnimation();
     invalidateSelf();
-    mRing.setShowArrow(false);
     mRing.setColorIndex(0);
     mRing.resetOriginals();
   }
@@ -252,12 +245,12 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     return false;
   }
 
-  @Override public int getIntrinsicHeight() {
-    return (int) mHeight;
-  }
-
   float getMinProgressArc(Shyaringan ring) {
     return (float) Math.toRadians(ring.getStrokeWidth() / (2 * Math.PI * ring.getCenterRadius()));
+  }
+
+  @Override public int getIntrinsicHeight() {
+    return (int) mHeight;
   }
 
   // Adapted from ArgbEvaluator.java
@@ -314,10 +307,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
             * interpolatedTime);
     XLog.e("srl --> ring " + rotation);
     ring.setRotation(rotation);
-  }
-
-  @Override public int getIntrinsicWidth() {
-    return (int) mWidth;
   }
 
   private void setupAnimators() {
@@ -392,7 +381,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
           // into progress mode
           mFinishing = false;
           animation.setDuration(ANIMATION_DURATION);
-          ring.setShowArrow(false);
         } else {
           mRotationCount = (mRotationCount + 1) % (NUM_POINTS);
         }
@@ -404,7 +392,15 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
   @Retention(RetentionPolicy.SOURCE) @IntDef({ LARGE, DEFAULT }) @interface ProgressDrawableSize {
   }
 
+  @Override public int getIntrinsicWidth() {
+    return (int) mWidth;
+  }
+
+  /**
+   * 写轮眼
+   */
   private static class Shyaringan {
+
     private static final int GOGOK_COUNT = 3;
     private final RectF mTempBounds = new RectF();
     // private final Paint mArrowPaint = new Paint();
@@ -430,7 +426,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     private float mStartingStartTrim;
     private float mStartingEndTrim;
     private float mStartingRotation;
-    private boolean mShowArrow;
     // private Path mArrow;
     private float mArrowScale;
     private double mRingCenterRadius;
@@ -518,7 +513,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         mPaintCircle.setColor(Color.argb(255, 22, 22, 22));
         c.drawCircle(cx, cy, radius / 5, mPaintCircle);
       }
-      c.rotate(getAngle(), cx, cy);
+      // c.rotate(0, cx, cy);
       // 绘制勾玉
       {
         int count = GOGOK_COUNT;
@@ -571,13 +566,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         }
       }
       // postInvalidateDelayed(30);
-    }
-
-    private float getAngle() {
-      // mAngle += 6;
-      // mAngle %= 360;
-      // return mRotation;
-      return 0;
     }
 
     /**
@@ -728,16 +716,6 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
      */
     void setCenterRadius(double centerRadius) {
       mRingCenterRadius = centerRadius;
-    }
-
-    /**
-     * @param show Set to true to show the arrow head on the progress spinner.
-     */
-    void setShowArrow(boolean show) {
-      if (mShowArrow != show) {
-        mShowArrow = show;
-        invalidateSelf();
-      }
     }
 
     /**

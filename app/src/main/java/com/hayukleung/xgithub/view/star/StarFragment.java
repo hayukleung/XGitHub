@@ -17,7 +17,7 @@ import com.hayukleung.xgithub.contract.ContractStar.IPresenterStar;
 import com.hayukleung.xgithub.model.Stub;
 import com.hayukleung.xgithub.view.UIUtils;
 import com.hayukleung.xgithub.view.XFragment;
-import com.hayukleung.xgithub.widget.SwipeRefreshLayout;
+import com.hayukleung.xgithub.widget.srl.ShyaringanSwipeRefreshLayout;
 
 /**
  * XGitHub
@@ -30,8 +30,7 @@ import com.hayukleung.xgithub.widget.SwipeRefreshLayout;
 
 public class StarFragment extends XFragment<Stub, IPresenterStar> implements StarView {
 
-  @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout
-      mSwipeRefreshLayout;
+  @BindView(R.id.swipe_refresh_layout) ShyaringanSwipeRefreshLayout mShyaringanSwipeRefreshLayout;
   @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
   @BindView(R.id.toolbar) Toolbar mToolbar;
 
@@ -83,9 +82,10 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
     // Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moments_refresh_icon);
     // drawable.setBitmap(bitmap);
     // mSwipeRefreshLayout.setProgressView(drawable);
-    mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+    mShyaringanSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     // mSwipeRefreshLayout.setProgressViewEndTarget(false, Screen.getInstance(getActivity()).dp2px(120));
-    mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    mShyaringanSwipeRefreshLayout.setOnRefreshListener(
+        new ShyaringanSwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
       }
     });
@@ -125,6 +125,6 @@ public class StarFragment extends XFragment<Stub, IPresenterStar> implements Sta
   }
 
   @OnClick({ R.id.stop }) public void onClick() {
-    mSwipeRefreshLayout.setRefreshing(false);
+    mShyaringanSwipeRefreshLayout.setRefreshing(false);
   }
 }

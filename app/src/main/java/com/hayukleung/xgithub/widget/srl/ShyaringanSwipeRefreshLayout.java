@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hayukleung.xgithub.widget;
+package com.hayukleung.xgithub.widget.srl;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -66,17 +66,17 @@ import com.hayukleung.xgithub.common.wrapper.XLog;
  * refresh of the content wherever this gesture is used.
  * </p>
  */
-public class SwipeRefreshLayout extends ViewGroup
+public class ShyaringanSwipeRefreshLayout extends ViewGroup
     implements NestedScrollingParent, NestedScrollingChild {
   // Maps to ProgressBar.Large style
-  public static final int LARGE = MaterialProgressDrawable.LARGE;
+  public static final int LARGE = ShyaringanProgressDrawable.LARGE;
   // Maps to ProgressBar default style
-  public static final int DEFAULT = MaterialProgressDrawable.DEFAULT;
+  public static final int DEFAULT = ShyaringanProgressDrawable.DEFAULT;
 
   @VisibleForTesting static final int CIRCLE_DIAMETER = 40;
   @VisibleForTesting static final int CIRCLE_DIAMETER_LARGE = 56;
 
-  private static final String LOG_TAG = SwipeRefreshLayout.class.getSimpleName();
+  private static final String LOG_TAG = ShyaringanSwipeRefreshLayout.class.getSimpleName();
 
   private static final int MAX_ALPHA = 255;
   private static final int STARTING_PROGRESS_ALPHA = (int) (.3f * MAX_ALPHA);
@@ -125,7 +125,7 @@ public class SwipeRefreshLayout extends ViewGroup
   };
   float mStartingScale;
   int mSpinnerOffsetEnd;
-  MaterialProgressDrawable mProgress;
+  ShyaringanProgressDrawable mProgress;
   boolean mNotify;
   // Whether the client has set a custom starting position;
   boolean mUsingCustomStart;
@@ -197,7 +197,7 @@ public class SwipeRefreshLayout extends ViewGroup
    *
    * @param context
    */
-  public SwipeRefreshLayout(Context context) {
+  public ShyaringanSwipeRefreshLayout(Context context) {
     this(context, null);
   }
 
@@ -207,7 +207,7 @@ public class SwipeRefreshLayout extends ViewGroup
    * @param context
    * @param attrs
    */
-  public SwipeRefreshLayout(Context context, AttributeSet attrs) {
+  public ShyaringanSwipeRefreshLayout(Context context, AttributeSet attrs) {
     super(context, attrs);
 
     mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -241,7 +241,7 @@ public class SwipeRefreshLayout extends ViewGroup
 
   private void createProgressView() {
     mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT);
-    mProgress = new MaterialProgressDrawable(getContext(), this);
+    mProgress = new ShyaringanProgressDrawable(getContext(), this);
     mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
     mCircleView.setImageDrawable(mProgress);
     mCircleView.setVisibility(View.GONE);
@@ -358,7 +358,7 @@ public class SwipeRefreshLayout extends ViewGroup
     mCircleView.measure(MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY),
         MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY));
     mCircleViewIndex = -1;
-    // Get the index of the circleview.
+    // Get the index of the circle view.
     for (int index = 0; index < getChildCount(); index++) {
       if (getChildAt(index) == mCircleView) {
         mCircleViewIndex = index;
@@ -497,11 +497,11 @@ public class SwipeRefreshLayout extends ViewGroup
    * One of DEFAULT, or LARGE.
    */
   public void setSize(int size) {
-    if (size != MaterialProgressDrawable.LARGE && size != MaterialProgressDrawable.DEFAULT) {
+    if (size != ShyaringanProgressDrawable.LARGE && size != ShyaringanProgressDrawable.DEFAULT) {
       return;
     }
     final DisplayMetrics metrics = getResources().getDisplayMetrics();
-    if (size == MaterialProgressDrawable.LARGE) {
+    if (size == ShyaringanProgressDrawable.LARGE) {
       mCircleDiameter = (int) (CIRCLE_DIAMETER_LARGE * metrics.density);
     } else {
       mCircleDiameter = (int) (CIRCLE_DIAMETER * metrics.density);
@@ -624,13 +624,6 @@ public class SwipeRefreshLayout extends ViewGroup
   }
 
   /**
-   * @deprecated Use {@link #setColorSchemeResources(int...)}
-   */
-  @Deprecated public void setColorScheme(@ColorInt int... colors) {
-    setColorSchemeResources(colors);
-  }
-
-  /**
    * Set the color resources used in the progress animation from color resources.
    * The first color will also be the color of the bar that grows in response
    * to a user swipe gesture.
@@ -710,7 +703,7 @@ public class SwipeRefreshLayout extends ViewGroup
   }
 
   /**
-   * Set a callback to override {@link SwipeRefreshLayout#canChildScrollUp()} method. Non-null
+   * Set a callback to override {@link ShyaringanSwipeRefreshLayout#canChildScrollUp()} method. Non-null
    * callback will return the value provided by the callback and ignore all internal logic.
    *
    * @param callback Callback that should be called when canChildScrollUp() is called.
@@ -916,13 +909,13 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public void setNestedScrollingEnabled(boolean enabled) {
-    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-  }
-
   @Override
   public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
     return dispatchNestedFling(velocityX, velocityY, consumed);
+  }
+
+  @Override public void setNestedScrollingEnabled(boolean enabled) {
+    mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
   }
 
   @Override public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
@@ -931,10 +924,6 @@ public class SwipeRefreshLayout extends ViewGroup
 
   @Override public int getNestedScrollAxes() {
     return mNestedScrollingParentHelper.getNestedScrollAxes();
-  }
-
-  @Override public boolean isNestedScrollingEnabled() {
-    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
   }
 
   /**
@@ -967,6 +956,10 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
+  @Override public boolean isNestedScrollingEnabled() {
+    return mNestedScrollingChildHelper.isNestedScrollingEnabled();
+  }
+
   private void onSecondaryPointerUp(MotionEvent ev) {
     final int pointerIndex = MotionEventCompat.getActionIndex(ev);
     final int pointerId = ev.getPointerId(pointerIndex);
@@ -978,23 +971,18 @@ public class SwipeRefreshLayout extends ViewGroup
     }
   }
 
-  @Override public boolean startNestedScroll(int axes) {
-    return mNestedScrollingChildHelper.startNestedScroll(axes);
-  }
-
   private boolean isAnimationRunning(Animation animation) {
     return animation != null && animation.hasStarted() && !animation.hasEnded();
   }
 
-  @SuppressLint("NewApi") private void moveSpinner(float overscrollTop) {
-    mProgress.showArrow(true);
+  @SuppressLint("NewApi") private void moveSpinner(float overScrollTop) {
 
-    float originalDragPercent = overscrollTop / mTotalDragDistance;
+    float originalDragPercent = overScrollTop / mTotalDragDistance;
 
     float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
 
     float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
-    float extraOS = Math.abs(overscrollTop) - mTotalDragDistance;
+    float extraOS = Math.abs(overScrollTop) - mTotalDragDistance;
     float slingshotDist =
         mUsingCustomStart ? mSpinnerOffsetEnd - mOriginalOffsetTop : mSpinnerOffsetEnd;
     float tensionSlingshotPercent =
@@ -1014,9 +1002,9 @@ public class SwipeRefreshLayout extends ViewGroup
     }
 
     if (mScale) {
-      setAnimationProgress(Math.min(1f, overscrollTop / mTotalDragDistance));
+      setAnimationProgress(Math.min(1f, overScrollTop / mTotalDragDistance));
     }
-    if (overscrollTop < mTotalDragDistance) {
+    if (overScrollTop < mTotalDragDistance) {
       if (mProgress.getAlpha() > STARTING_PROGRESS_ALPHA && !isAnimationRunning(
           mAlphaStartAnimation)) {
         // Animate the alpha
@@ -1033,7 +1021,7 @@ public class SwipeRefreshLayout extends ViewGroup
     mProgress.setArrowScale(Math.min(1f, adjustedPercent));
 
     // float rotation = - (-0.25f +.4f * adjustedPercent + tensionPercent * 2) * .5f;
-    float rotation = 40000f / overscrollTop % 360f;
+    float rotation = 40000f / overScrollTop % 360f;
     XLog.e("srl --> moveSpinner - rotation - " + rotation);
     mProgress.setProgressRotation(rotation);
     setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
@@ -1064,12 +1052,11 @@ public class SwipeRefreshLayout extends ViewGroup
         };
       }
       animateOffsetToStartPosition(mCurrentTargetOffsetTop, listener);
-      mProgress.showArrow(false);
     }
   }
 
-  @Override public void stopNestedScroll() {
-    mNestedScrollingChildHelper.stopNestedScroll();
+  @Override public boolean startNestedScroll(int axes) {
+    return mNestedScrollingChildHelper.startNestedScroll(axes);
   }
 
   private void animateOffsetToCorrectPosition(int from, AnimationListener listener) {
@@ -1124,10 +1111,6 @@ public class SwipeRefreshLayout extends ViewGroup
     mCircleView.startAnimation(mScaleDownToStartAnimation);
   }
 
-  @Override public boolean hasNestedScrollingParent() {
-    return mNestedScrollingChildHelper.hasNestedScrollingParent();
-  }
-
   /**
    * Classes that wish to be notified when the swipe gesture correctly
    * triggers a refresh should implement this interface.
@@ -1139,21 +1122,33 @@ public class SwipeRefreshLayout extends ViewGroup
     void onRefresh();
   }
 
+  @Override public void stopNestedScroll() {
+    mNestedScrollingChildHelper.stopNestedScroll();
+  }
+
   /**
-   * Classes that wish to override {@link SwipeRefreshLayout#canChildScrollUp()} method
+   * Classes that wish to override {@link ShyaringanSwipeRefreshLayout#canChildScrollUp()} method
    * behavior should implement this interface.
    */
   public interface OnChildScrollUpCallback {
     /**
-     * Callback that will be called when {@link SwipeRefreshLayout#canChildScrollUp()} method
+     * Callback that will be called when {@link ShyaringanSwipeRefreshLayout#canChildScrollUp()} method
      * is called to allow the implementer to override its behavior.
      *
      * @param parent SwipeRefreshLayout that this callback is overriding.
      * @param child The child view of SwipeRefreshLayout.
      * @return Whether it is possible for the child view of parent layout to scroll up.
      */
-    boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child);
+    boolean canChildScrollUp(ShyaringanSwipeRefreshLayout parent, @Nullable View child);
   }
+
+  @Override public boolean hasNestedScrollingParent() {
+    return mNestedScrollingChildHelper.hasNestedScrollingParent();
+  }
+
+
+
+
 
   @Override public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
       int dyUnconsumed, int[] offsetInWindow) {
@@ -1165,12 +1160,6 @@ public class SwipeRefreshLayout extends ViewGroup
   public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
     return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
   }
-
-
-
-
-
-
 
   @Override public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
     return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
